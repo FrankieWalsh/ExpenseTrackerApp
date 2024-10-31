@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.expensetrackerapp.ui.theme.ExpenseTrackerAppTheme
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.ktx.auth
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +29,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        val auth = Firebase.auth
     }
 }
 
