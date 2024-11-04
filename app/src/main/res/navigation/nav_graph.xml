@@ -22,7 +22,11 @@
         android:id="@+id/registerFragment"
         android:name="com.example.expensetrackerapp.ui.auth.RegisterFragment"
         android:label="Register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/groupFragment"

@@ -43,11 +43,15 @@ class LoginFragment : Fragment() {
         authViewModel.loginResult.observe(viewLifecycleOwner) { result ->
             if (result) {
                 Toast.makeText(requireContext(), "Login successful", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_loginFragment_to_groupFragment)
+                // Check if we are still in LoginFragment before navigating
+                if (findNavController().currentDestination?.id == R.id.loginFragment) {
+                    findNavController().navigate(R.id.action_loginFragment_to_groupFragment)
+                }
             } else {
                 Toast.makeText(requireContext(), "Login failed", Toast.LENGTH_SHORT).show()
             }
         }
+
 
         return view
     }
