@@ -6,12 +6,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetrackerapp.R
+import com.example.expensetrackerapp.model.Group
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 
-class GroupAdapter(private val groups: List<String>) :
+class GroupAdapter(private val groups: List<Group>, private val onClick: (Group) -> Unit) :
     RecyclerView.Adapter<GroupAdapter.GroupViewHolder>() {
 
     inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val groupName: TextView = itemView.findViewById(R.id.textViewGroupName)
+        val groupDescription: TextView = itemView.findViewById(R.id.textViewGroupDescription)
+        val cardView: MaterialCardView = itemView as MaterialCardView // Cast to MaterialCardView, not MaterialButton
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
@@ -21,9 +26,13 @@ class GroupAdapter(private val groups: List<String>) :
     }
 
     override fun onBindViewHolder(holder: GroupViewHolder, position: Int) {
-        holder.groupName.text = groups[position]
-        holder.itemView.setOnClickListener {
-            // Handle item click: navigate to group detail screen or show group info
+        val group = groups[position]
+        holder.groupName.text = group.name
+        holder.groupDescription.text = group.description
+
+
+        holder.cardView.setOnClickListener {
+            onClick(group) // Pass the clicked group to the callback
         }
     }
 
