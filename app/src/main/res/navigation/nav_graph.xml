@@ -32,5 +32,17 @@
         android:id="@+id/groupFragment"
         android:name="com.example.expensetrackerapp.ui.group.GroupFragment"
         android:label="Groups"
-        tools:layout="@layout/fragment_group" />
+        tools:layout="@layout/fragment_group">
+
+        <!-- Action to navigate to GroupDetailFragment -->
+        <action
+            android:id="@+id/action_groupFragment_to_groupDetailFragment"
+            app:destination="@id/groupDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/groupDetailFragment"
+        android:name="com.example.expensetrackerapp.ui.group.GroupDetailFragment"
+        android:label="Group Details"
+        tools:layout="@layout/fragment_group_detail" />
 </navigation>

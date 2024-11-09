@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetrackerapp.R
@@ -28,11 +29,18 @@ class GroupFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_group, container, false)
 
-        // Initialize Firestore and RecyclerView
         firestore = FirebaseFirestore.getInstance()
-        groupAdapter = GroupAdapter(groups) { group ->
-            Toast.makeText(requireContext(), "Clicked: ${group.name}", Toast.LENGTH_SHORT).show()
-        }
+        groupAdapter = GroupAdapter(
+            groups,
+            onClick = { group ->
+                findNavController().navigate(R.id.action_groupFragment_to_groupDetailFragment)
+            },
+            onJoinClick = { group ->
+                Toast.makeText(requireContext(), "Joining ${group.name}", Toast.LENGTH_SHORT).show()
+                joinGroup(group)
+            }
+        )
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewGroups)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = groupAdapter
@@ -42,7 +50,6 @@ class GroupFragment : Fragment() {
             createNewGroup()
         }
 
-        // Fetch groups from Firestore
         fetchGroups()
 
         return view
@@ -69,7 +76,6 @@ class GroupFragment : Fragment() {
         val groupNameEditText = dialogView.findViewById<EditText>(R.id.editTextGroupName)
         val groupDescriptionEditText = dialogView.findViewById<EditText>(R.id.editTextGroupDescription)
 
-        // Create the dialog without setting the positive button here
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Create New Group")
             .setView(dialogView)
@@ -77,12 +83,10 @@ class GroupFragment : Fragment() {
             .create()
 
         dialog.setOnShowListener {
-            // Access the Create button
             val createButton = dialogView.findViewById<Button>(R.id.buttonCreateGroup)
             createButton.setOnClickListener {
                 Log.d("GroupFragment", "Create button clicked in dialog")
 
-                // Get input from the EditText fields
                 val name = groupNameEditText.text.toString().trim()
                 val description = groupDescriptionEditText.text.toString().trim()
 
@@ -90,7 +94,6 @@ class GroupFragment : Fragment() {
                     Log.d("GroupFragment", "Group name is empty")
                     Toast.makeText(requireContext(), "Group name is required", Toast.LENGTH_SHORT).show()
                 } else {
-                    // Add group to Firestore
                     val group = Group(name = name, description = description)
                     Log.d("GroupFragment", "Attempting to add group to Firestore")
                     firestore.collection("groups")
@@ -110,4 +113,7 @@ class GroupFragment : Fragment() {
         dialog.show()
     }
 
+    private fun joinGroup(group: Group) {
+        Log.d("GroupFragment", "User joining group: ${group.name}")
+    }
 }

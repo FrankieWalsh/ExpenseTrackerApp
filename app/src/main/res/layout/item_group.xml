@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:padding="16dp"
-    app:cardBackgroundColor="?attr/colorPrimary"
-    app:cardElevation="4dp"
-    android:clickable="true"
-    android:focusable="true">
+    android:padding="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,18 +14,23 @@
             android:id="@+id/textViewGroupName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@android:color/white"
-            android:text="Group Name" />
+            android:text="Group Name"
+            android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <TextView
             android:id="@+id/textViewGroupDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="4dp"
-            android:text="Group Description" />
-    </LinearLayout>
+            android:text="Group Description"
+            android:textAppearance="?attr/textAppearanceBody2" />
 
+        <!-- Join button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonJoinGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Join Group"
+            style="?attr/materialButtonOutlinedStyle" />
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

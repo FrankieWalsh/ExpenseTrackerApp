@@ -10,13 +10,17 @@ import com.example.expensetrackerapp.model.Group
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 
-class GroupAdapter(private val groups: List<Group>, private val onClick: (Group) -> Unit) :
-    RecyclerView.Adapter<GroupAdapter.GroupViewHolder>() {
+class GroupAdapter(
+    private val groups: List<Group>,
+    private val onClick: (Group) -> Unit,
+    private val onJoinClick: (Group) -> Unit
+) : RecyclerView.Adapter<GroupAdapter.GroupViewHolder>() {
 
     inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val groupName: TextView = itemView.findViewById(R.id.textViewGroupName)
         val groupDescription: TextView = itemView.findViewById(R.id.textViewGroupDescription)
-        val cardView: MaterialCardView = itemView as MaterialCardView // Cast to MaterialCardView, not MaterialButton
+        val cardView: MaterialCardView = itemView as MaterialCardView
+        val joinButton: MaterialButton = itemView.findViewById(R.id.buttonJoinGroup)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
@@ -30,9 +34,12 @@ class GroupAdapter(private val groups: List<Group>, private val onClick: (Group)
         holder.groupName.text = group.name
         holder.groupDescription.text = group.description
 
-
         holder.cardView.setOnClickListener {
-            onClick(group) // Pass the clicked group to the callback
+            onClick(group)
+        }
+
+        holder.joinButton.setOnClickListener {
+            onJoinClick(group)
         }
     }
 
