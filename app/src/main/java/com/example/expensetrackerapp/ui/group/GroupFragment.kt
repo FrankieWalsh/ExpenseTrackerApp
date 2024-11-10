@@ -42,12 +42,11 @@ class GroupFragment : Fragment() {
         groupAdapter = GroupAdapter(
             groups,
             onGroupClick = { group ->
-                // Create a Bundle to pass the group ID
+                // Use the new action to navigate to GroupOverviewFragment, passing the group ID
                 val bundle = Bundle().apply {
-                    putString("groupId", group.id) // Pass the group ID as a String
+                    putString("groupId", group.id)
                 }
-                // Navigate to GroupDetailFragment with the bundle
-                findNavController().navigate(R.id.action_groupFragment_to_groupDetailFragment, bundle)
+                findNavController().navigate(R.id.action_groupFragment_to_groupOverviewFragment, bundle)
             }
         )
 

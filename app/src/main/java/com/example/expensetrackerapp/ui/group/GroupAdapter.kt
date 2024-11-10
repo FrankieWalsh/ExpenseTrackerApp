@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetrackerapp.R
 import com.example.expensetrackerapp.model.Group
 
+// GroupAdapter class, either as a standalone or inner class
 class GroupAdapter(
     private val groups: List<Group>,
     private val onGroupClick: (Group) -> Unit
@@ -28,7 +29,7 @@ class GroupAdapter(
         holder.groupName.text = group.name
         holder.groupDescription.text = group.description
 
-        // Make the whole item view clickable
+        // Make the entire item view clickable
         holder.itemView.setOnClickListener {
             onGroupClick(group)
         }
