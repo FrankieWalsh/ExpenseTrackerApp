@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.EditText
 import android.widget.Button
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetrackerapp.model.GroupMember
 
 class GroupDetailFragment : Fragment() {
@@ -22,41 +24,46 @@ class GroupDetailFragment : Fragment() {
     private var isEditMode = false
     private var groupId: String? = null
 
+    private val inviteEmails = mutableListOf<String>()
+    private lateinit var inviteEmailAdapter: InviteEmailAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_group_detail, container, false)
+
+        groupId = arguments?.getString("groupId")
         firestore = FirebaseFirestore.getInstance()
         userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-        // Check if groupId is provided as an argument for Edit Mode
         groupId = arguments?.getString("groupId")
         isEditMode = groupId != null
 
-        // Initialize UI elements
         val groupNameEditText = view.findViewById<EditText>(R.id.editTextGroupName)
         val groupDescriptionEditText = view.findViewById<EditText>(R.id.editTextGroupDescription)
         val inviteEmailEditText = view.findViewById<EditText>(R.id.editTextInviteEmail)
         val addEmailButton = view.findViewById<Button>(R.id.buttonAddEmail)
         val createGroupButton = view.findViewById<Button>(R.id.buttonCreateGroup)
 
-        // Placeholder list for email invites
-        val inviteEmails = mutableListOf<String>()
+        inviteEmailAdapter = InviteEmailAdapter(inviteEmails)
+        view.findViewById<RecyclerView>(R.id.recyclerViewInvitedEmails).apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = inviteEmailAdapter
+        }
 
-        // Add email to the invite list
         addEmailButton.setOnClickListener {
             val email = inviteEmailEditText.text.toString().trim()
             if (email.isNotEmpty()) {
                 inviteEmails.add(email)
                 inviteEmailEditText.text.clear()
+                inviteEmailAdapter.notifyDataSetChanged()
                 Toast.makeText(requireContext(), "Added $email to invites", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "Enter a valid email", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Create or Edit group based on mode
         createGroupButton.text = if (isEditMode) "Update Group" else "Create Group"
         createGroupButton.setOnClickListener {
             val name = groupNameEditText.text.toString().trim()
@@ -67,8 +74,7 @@ class GroupDetailFragment : Fragment() {
                     // Update the group (future implementation)
                     Toast.makeText(requireContext(), "Edit group functionality not yet implemented", Toast.LENGTH_SHORT).show()
                 } else {
-                    // Create new group
-                    createGroup(name, description, inviteEmails)
+                    createGroup(name, description)
                 }
             } else {
                 Toast.makeText(requireContext(), "Group name required", Toast.LENGTH_SHORT).show()
@@ -78,7 +84,7 @@ class GroupDetailFragment : Fragment() {
         return view
     }
 
-    private fun createGroup(name: String, description: String, inviteEmails: List<String>) {
+    private fun createGroup(name: String, description: String) {
         val group = Group(name = name, description = description, createdBy = userId)
 
         firestore.collection("groups").add(group)
@@ -88,12 +94,23 @@ class GroupDetailFragment : Fragment() {
                     .addOnSuccessListener {
                         Toast.makeText(requireContext(), "Group created successfully", Toast.LENGTH_SHORT).show()
 
-                        // Send invitations to each email
-                        for (email in inviteEmails) {
-                            sendInvitation(groupId, email)
-                        }
+                        // Add the creator as a group member
+                        addGroupMember(groupId, userId, isCreator = true)
 
-                        parentFragmentManager.popBackStack() // Navigate back to GroupFragment
+                        // Send invitations to each email in the list
+                        if (inviteEmails.isNotEmpty()) {
+                            var invitationsProcessed = 0
+                            for (email in inviteEmails) {
+                                sendInvitation(groupId, email) {
+                                    invitationsProcessed++
+                                    if (invitationsProcessed == inviteEmails.size) {
+                                        parentFragmentManager.popBackStack()
+                                    }
+                                }
+                            }
+                        } else {
+                            parentFragmentManager.popBackStack()
+                        }
                     }
                     .addOnFailureListener { e ->
                         Toast.makeText(requireContext(), "Error setting group ID: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -104,21 +121,16 @@ class GroupDetailFragment : Fragment() {
             }
     }
 
-    // Function to add a user as a member of a group
     private fun addGroupMember(groupId: String, userId: String, isCreator: Boolean = false) {
-        // Create a GroupMember instance with an empty `id` field
         val groupMember = GroupMember(
             id = "", // This will be set by Firestore once we have the document ID
             groupId = groupId,
-            userId = userId
+            userId = userId // This is the UID from Firebase Auth
         )
 
-        // Add the group member to Firestore
         firestore.collection("group_members").add(groupMember)
             .addOnSuccessListener { documentRef ->
-                val documentId = documentRef.id // Firestore-generated document ID
-
-                // Update the `id` field in Firestore to match the document ID
+                val documentId = documentRef.id
                 documentRef.update("id", documentId)
                     .addOnSuccessListener {
                         Log.d("GroupDetailFragment", "GroupMember added with ID: $documentId")
@@ -132,38 +144,48 @@ class GroupDetailFragment : Fragment() {
             }
     }
 
-    private fun sendInvitation(groupId: String, email: String) {
-        // Look up the user by email in the `users` collection
+
+    private fun sendInvitation(groupId: String, email: String, onComplete: () -> Unit) {
         firestore.collection("users")
             .whereEqualTo("email", email)
             .get()
             .addOnSuccessListener { result ->
                 if (result.documents.isNotEmpty()) {
-                    val userId = result.documents[0].id
+                    val invitedUserId = result.documents[0].id
                     val invitation = Invitation(
-                        id = "", // Firestore will auto-generate the ID
+                        id = "",
                         groupId = groupId,
-                        userId = userId,
+                        userId = invitedUserId,
                         invitedBy = this.userId,
                         status = "pending"
                     )
 
-                    // Save the invitation to the `invitations` collection
                     firestore.collection("invitations").add(invitation)
                         .addOnSuccessListener {
-                            Toast.makeText(requireContext(), "Invitation sent to $email", Toast.LENGTH_SHORT).show()
+                            if (isAdded) {
+                                Toast.makeText(requireContext(), "Invitation sent to $email", Toast.LENGTH_SHORT).show()
+                            }
+                            onComplete()
                         }
                         .addOnFailureListener { e ->
-                            Toast.makeText(requireContext(), "Error sending invitation: ${e.message}", Toast.LENGTH_SHORT).show()
+                            if (isAdded) {
+                                Toast.makeText(requireContext(), "Error sending invitation: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                            onComplete()
                         }
                 } else {
-                    // User with the provided email was not found
-                    Toast.makeText(requireContext(), "User with email $email not found", Toast.LENGTH_SHORT).show()
+                    if (isAdded) {
+                        Toast.makeText(requireContext(), "User with email $email not found", Toast.LENGTH_SHORT).show()
+                    }
+                    onComplete()
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error finding user: ${e.message}", Toast.LENGTH_SHORT).show()
+                if (isAdded) {
+                    Toast.makeText(requireContext(), "Error finding user: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+                onComplete()
             }
     }
-
 }
+

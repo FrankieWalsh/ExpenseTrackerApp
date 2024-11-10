@@ -41,8 +41,14 @@ class GroupFragment : Fragment() {
         // Initialize Group Adapter
         groupAdapter = GroupAdapter(
             groups,
-            onClick = { group -> findNavController().navigate(R.id.action_groupFragment_to_groupDetailFragment) },
-            onJoinClick = { group -> joinGroup(group) }
+            onGroupClick = { group ->
+                // Create a Bundle to pass the group ID
+                val bundle = Bundle().apply {
+                    putString("groupId", group.id) // Pass the group ID as a String
+                }
+                // Navigate to GroupDetailFragment with the bundle
+                findNavController().navigate(R.id.action_groupFragment_to_groupDetailFragment, bundle)
+            }
         )
 
         // Initialize Invitation Adapter
@@ -74,7 +80,7 @@ class GroupFragment : Fragment() {
     }
 
     private fun fetchGroupsAndInvitations() {
-        // Fetch group memberships
+        // First, fetch only the groups the user is a member of from the `group_members` collection
         firestore.collection("group_members")
             .whereEqualTo("userId", userId)
             .get()
@@ -83,50 +89,58 @@ class GroupFragment : Fragment() {
                     document.toObject(GroupMember::class.java)?.groupId
                 }.toMutableSet()
 
-                // Fetch pending invitations for the user
-                firestore.collection("invitations")
-                    .whereEqualTo("userId", userId)
-                    .whereEqualTo("status", "pending")
-                    .get()
-                    .addOnSuccessListener { invitationResult ->
-                        invitations.clear()
-                        invitationResult.documents.forEach { document ->
-                            val invitation = document.toObject(Invitation::class.java)
-                            if (invitation != null) {
-                                invitation.id = document.id
-                                invitations.add(invitation)
-                                groupIds.add(invitation.groupId) // Include invited groups in groupIds
-                            }
-                        }
-
-                        // Update UI visibility for invitations
-                        view?.findViewById<View>(R.id.invitationsContainer)?.visibility =
-                            if (invitations.isEmpty()) View.GONE else View.VISIBLE
-                        invitationAdapter.notifyDataSetChanged()
-
-                        if (groupIds.isNotEmpty()) {
-                            firestore.collection("groups")
-                                .whereIn("id", groupIds.toList())
-                                .get()
-                                .addOnSuccessListener { groupsResult ->
-                                    groups.clear()
-                                    for (document in groupsResult) {
-                                        val group = document.toObject(Group::class.java)
-                                        group?.id = document.id
-                                        groups.add(group)
-                                    }
-                                    groupAdapter.notifyDataSetChanged()
-                                    toggleNoGroupsMessage()
-                                }
-                        } else {
+                // Now, fetch groups based on the collected group IDs from `group_members`
+                if (groupIds.isNotEmpty()) {
+                    firestore.collection("groups")
+                        .whereIn("id", groupIds.toList())
+                        .get()
+                        .addOnSuccessListener { groupsResult ->
                             groups.clear()
+                            for (document in groupsResult) {
+                                val group = document.toObject(Group::class.java)
+                                group?.id = document.id
+                                groups.add(group)
+                            }
                             groupAdapter.notifyDataSetChanged()
-                            toggleNoGroupsMessage()
+                            toggleNoGroupsMessage() // Adjust visibility of "No groups" message based on membership
                         }
-                    }
+                } else {
+                    // If no memberships, clear the group list and show "No groups" message
+                    groups.clear()
+                    groupAdapter.notifyDataSetChanged()
+                    toggleNoGroupsMessage()
+                }
+
+                // Fetch pending invitations separately for display in the invitation list
+                fetchPendingInvitations()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    // Separate function to fetch pending invitations
+    private fun fetchPendingInvitations() {
+        firestore.collection("invitations")
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("status", "pending")
+            .get()
+            .addOnSuccessListener { invitationResult ->
+                invitations.clear()
+                invitationResult.documents.forEach { document ->
+                    val invitation = document.toObject(Invitation::class.java)
+                    if (invitation != null) {
+                        invitation.id = document.id
+                        invitations.add(invitation)
+                    }
+                }
+
+                view?.findViewById<View>(R.id.invitationsContainer)?.visibility =
+                    if (invitations.isEmpty()) View.GONE else View.VISIBLE
+                invitationAdapter.notifyDataSetChanged()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error fetching invitations: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -203,14 +217,22 @@ class GroupFragment : Fragment() {
     }
 
     private fun acceptInvitation(invitation: Invitation) {
-        val groupMember = GroupMember(id = "", groupId = invitation.groupId, userId = userId)
+        // Add the user to `group_members` with the UID and delete the invitation
+        val groupMember = GroupMember(id = "", groupId = invitation.groupId, userId = userId) // UID from Firebase Auth
         firestore.collection("group_members").add(groupMember)
-            .addOnSuccessListener {
-                firestore.collection("invitations").document(invitation.id)
-                    .delete()
-                    .addOnSuccessListener { fetchGroupsAndInvitations() }
+            .addOnSuccessListener { documentRef ->
+                // Set the document ID as the `id` field in Firestore for consistency
+                documentRef.update("id", documentRef.id)
+                    .addOnSuccessListener {
+                        firestore.collection("invitations").document(invitation.id)
+                            .delete()
+                            .addOnSuccessListener { fetchGroupsAndInvitations() }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(requireContext(), "Error removing invitation: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
                     .addOnFailureListener { e ->
-                        Toast.makeText(requireContext(), "Error removing invitation: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("GroupFragment", "Error setting GroupMember ID: ${e.message}")
                     }
             }
             .addOnFailureListener { e ->
@@ -219,6 +241,7 @@ class GroupFragment : Fragment() {
     }
 
     private fun declineInvitation(invitation: Invitation) {
+        // Simply delete the invitation document if the user declines
         firestore.collection("invitations").document(invitation.id)
             .delete()
             .addOnSuccessListener { fetchGroupsAndInvitations() }
@@ -226,6 +249,5 @@ class GroupFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error declining invitation: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 
 }

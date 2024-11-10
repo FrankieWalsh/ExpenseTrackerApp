@@ -1,20 +1,18 @@
-package com.example.expensetrackerapp.ui.auth
-
+import com.example.expensetrackerapp.model.User
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.example.expensetrackerapp.R
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import android.widget.EditText
+import android.widget.Button
+import androidx.navigation.fragment.findNavController
 
 class RegisterFragment : Fragment() {
-
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
 
@@ -23,12 +21,13 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_register, container, false)
+
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
         val emailEditText = view.findViewById<EditText>(R.id.editTextEmail)
         val passwordEditText = view.findViewById<EditText>(R.id.editTextPassword)
-        val nameEditText = view.findViewById<EditText>(R.id.editTextName) // New name field
+        val nameEditText = view.findViewById<EditText>(R.id.editTextName)
         val registerButton = view.findViewById<Button>(R.id.buttonRegister)
 
         registerButton.setOnClickListener {
@@ -37,30 +36,32 @@ class RegisterFragment : Fragment() {
             val name = nameEditText.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty() || name.isEmpty()) {
-                Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please enter name, email, and password", Toast.LENGTH_SHORT).show()
             } else if (password.length < 6) {
                 Toast.makeText(requireContext(), "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
             } else {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            val user = auth.currentUser
-                            if (user != null) {
-                                val userId = user.uid
-                                val userDocument = mapOf(
-                                    "name" to name,
-                                    "email" to email,
-                                    "userId" to userId
-                                )
-                                firestore.collection("users").document(userId).set(userDocument)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(requireContext(), "Registration successful", Toast.LENGTH_SHORT).show()
-                                        findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(requireContext(), "Error saving user info", Toast.LENGTH_SHORT).show()
-                                    }
-                            }
+                            val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
+                            val firestoreUser = User(
+                                id = uid,
+                                name = name,
+                                email = email,
+                                phoneNumber = "",  // You can add a field for phone number if needed
+                                notificationPreferences = emptyMap()
+                            )
+
+                            // Save the user data in Firestore using UID as the document ID
+                            firestore.collection("users").document(uid).set(firestoreUser)
+                                .addOnSuccessListener {
+                                    Toast.makeText(requireContext(), "Registration successful", Toast.LENGTH_SHORT).show()
+                                    // Navigate to the login screen or main app screen
+                                    findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(requireContext(), "Firestore error: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
                         } else {
                             Toast.makeText(requireContext(), "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }

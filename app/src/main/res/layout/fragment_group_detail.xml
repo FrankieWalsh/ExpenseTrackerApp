@@ -43,6 +43,13 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp" />
 
+    <!-- RecyclerView to show the list of invited emails -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewInvitedEmails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
+
     <!-- Button to Create the Group -->
     <Button
         android:id="@+id/buttonCreateGroup"
