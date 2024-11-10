@@ -2,12 +2,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- Add your UI components here -->
-    <TextView
+    <!-- Group Name Input Field -->
+    <EditText
+        android:id="@+id/editTextGroupName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Group Name"
+        android:inputType="text"
+        android:padding="12dp" />
+
+    <!-- Group Description Input Field -->
+    <EditText
+        android:id="@+id/editTextGroupDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Group Description"
+        android:inputType="text"
+        android:padding="12dp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Email Input Field for Inviting Users -->
+    <EditText
+        android:id="@+id/editTextInviteEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Invite by Email"
+        android:inputType="textEmailAddress"
+        android:padding="12dp"
+        android:layout_marginTop="16dp" />
+
+    <!-- Button to Add Email to the Invite List -->
+    <Button
+        android:id="@+id/buttonAddEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello, World!" />
+        android:text="Add Email to Invites"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp" />
+
+    <!-- Button to Create the Group -->
+    <Button
+        android:id="@+id/buttonCreateGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Group"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>
