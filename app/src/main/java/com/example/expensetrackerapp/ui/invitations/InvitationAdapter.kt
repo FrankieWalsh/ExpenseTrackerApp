@@ -28,7 +28,9 @@ class InvitationAdapter(
 
     override fun onBindViewHolder(holder: InvitationViewHolder, position: Int) {
         val invitation = invitations[position]
-        holder.groupName.text = "Group ID: ${invitation.groupId}"
+
+        // Display group name instead of group ID
+        holder.groupName.text = invitation.groupName ?: "Unnamed Group"
 
         holder.acceptButton.setOnClickListener {
             onAccept(invitation)
@@ -38,6 +40,7 @@ class InvitationAdapter(
             onDecline(invitation)
         }
     }
+
 
     override fun getItemCount(): Int = invitations.size
 }

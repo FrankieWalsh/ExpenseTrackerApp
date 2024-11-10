@@ -5,5 +5,6 @@ data class Invitation(
     val groupId: String = "",
     val userId: String = "",
     val invitedBy: String = "",
-    var status: String = "pending"
+    var status: String = "pending",
+    var groupName: String? = null
 )

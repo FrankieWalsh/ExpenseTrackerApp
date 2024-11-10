@@ -33,10 +33,8 @@ class GroupDetailFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_group_detail, container, false)
 
-        groupId = arguments?.getString("groupId")
         firestore = FirebaseFirestore.getInstance()
         userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-
         groupId = arguments?.getString("groupId")
         isEditMode = groupId != null
 
@@ -71,8 +69,7 @@ class GroupDetailFragment : Fragment() {
 
             if (name.isNotEmpty()) {
                 if (isEditMode) {
-                    // Update the group (future implementation)
-                    Toast.makeText(requireContext(), "Edit group functionality not yet implemented", Toast.LENGTH_SHORT).show()
+                    updateGroup(name, description)
                 } else {
                     createGroup(name, description)
                 }
@@ -82,6 +79,27 @@ class GroupDetailFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (isEditMode) {
+            // If in edit mode, pre-fill group details
+            groupId?.let { id ->
+                firestore.collection("groups").document(id).get()
+                    .addOnSuccessListener { document ->
+                        if (document.exists()) {
+                            view.findViewById<EditText>(R.id.editTextGroupName).setText(document.getString("name"))
+                            view.findViewById<EditText>(R.id.editTextGroupDescription).setText(document.getString("description"))
+                        } else {
+                            Toast.makeText(requireContext(), "Group not found", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
+        }
     }
 
     private fun createGroup(name: String, description: String) {
@@ -94,10 +112,8 @@ class GroupDetailFragment : Fragment() {
                     .addOnSuccessListener {
                         Toast.makeText(requireContext(), "Group created successfully", Toast.LENGTH_SHORT).show()
 
-                        // Add the creator as a group member
                         addGroupMember(groupId, userId, isCreator = true)
 
-                        // Send invitations to each email in the list
                         if (inviteEmails.isNotEmpty()) {
                             var invitationsProcessed = 0
                             for (email in inviteEmails) {
@@ -121,11 +137,25 @@ class GroupDetailFragment : Fragment() {
             }
     }
 
+    private fun updateGroup(name: String, description: String) {
+        groupId?.let { id ->
+            firestore.collection("groups").document(id)
+                .update("name", name, "description", description)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Group updated successfully", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.popBackStack() // Navigate back to the previous screen
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Error updating group: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
     private fun addGroupMember(groupId: String, userId: String, isCreator: Boolean = false) {
         val groupMember = GroupMember(
-            id = "", // This will be set by Firestore once we have the document ID
+            id = "",
             groupId = groupId,
-            userId = userId // This is the UID from Firebase Auth
+            userId = userId
         )
 
         firestore.collection("group_members").add(groupMember)
@@ -143,7 +173,6 @@ class GroupDetailFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error adding user to group: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 
     private fun sendInvitation(groupId: String, email: String, onComplete: () -> Unit) {
         firestore.collection("users")
@@ -188,4 +217,3 @@ class GroupDetailFragment : Fragment() {
             }
     }
 }
-

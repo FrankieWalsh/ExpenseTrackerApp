@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_groupFragment_to_groupDetailFragment"
             app:destination="@id/groupDetailFragment" />
+        <action
+            android:id="@+id/action_groupFragment_to_groupOverviewFragment"
+            app:destination="@id/groupOverviewFragment" />
     </fragment>
 
     <fragment
@@ -52,10 +55,9 @@
         <argument
             android:name="groupId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_groupOverviewFragment_to_groupDetailFragment"
+            app:destination="@id/groupDetailFragment" />
     </fragment>
-
-    <action
-        android:id="@+id/action_groupFragment_to_groupOverviewFragment"
-        app:destination="@id/groupOverviewFragment" />
 
 </navigation>

@@ -126,19 +126,60 @@ class GroupFragment : Fragment() {
             .get()
             .addOnSuccessListener { invitationResult ->
                 invitations.clear()
+
+                if (invitationResult.documents.isEmpty()) {
+                    // Log if no invitations were found
+                    Log.d("GroupFragment", "No pending invitations found for user $userId")
+                    view?.findViewById<View>(R.id.invitationsContainer)?.visibility = View.GONE
+                    invitationAdapter.notifyDataSetChanged()
+                    return@addOnSuccessListener
+                }
+
+                // Create a temporary map to store group names by groupId
+                val groupIdToNameMap = mutableMapOf<String, String>()
+                var invitationsProcessed = 0
+
+                // Loop through each invitation document
                 invitationResult.documents.forEach { document ->
                     val invitation = document.toObject(Invitation::class.java)
                     if (invitation != null) {
                         invitation.id = document.id
-                        invitations.add(invitation)
+
+                        // Fetch group name if not cached
+                        if (groupIdToNameMap.containsKey(invitation.groupId)) {
+                            invitation.groupName = groupIdToNameMap[invitation.groupId]
+                            invitations.add(invitation)
+                            invitationsProcessed++
+                        } else {
+                            firestore.collection("groups").document(invitation.groupId)
+                                .get()
+                                .addOnSuccessListener { groupDoc ->
+                                    val groupName = groupDoc.getString("name") ?: "Unnamed Group"
+                                    groupIdToNameMap[invitation.groupId] = groupName
+                                    invitation.groupName = groupName
+                                    invitations.add(invitation)
+                                    invitationsProcessed++
+
+                                    // Update the adapter once all invitations have been processed
+                                    if (invitationsProcessed == invitationResult.documents.size) {
+                                        invitationAdapter.notifyDataSetChanged()
+                                        view?.findViewById<View>(R.id.invitationsContainer)?.visibility = if (invitations.isEmpty()) View.GONE else View.VISIBLE
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("GroupFragment", "Error fetching group name: ${e.message}")
+                                    invitationsProcessed++
+                                    if (invitationsProcessed == invitationResult.documents.size) {
+                                        invitationAdapter.notifyDataSetChanged()
+                                        view?.findViewById<View>(R.id.invitationsContainer)?.visibility = if (invitations.isEmpty()) View.GONE else View.VISIBLE
+                                    }
+                                }
+                        }
                     }
                 }
-
-                view?.findViewById<View>(R.id.invitationsContainer)?.visibility =
-                    if (invitations.isEmpty()) View.GONE else View.VISIBLE
-                invitationAdapter.notifyDataSetChanged()
             }
             .addOnFailureListener { e ->
+                Log.e("GroupFragment", "Error fetching invitations: ${e.message}")
                 Toast.makeText(requireContext(), "Error fetching invitations: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
