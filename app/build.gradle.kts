@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.material)
     implementation ("com.google.android.material:material:1.8.0")
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.androidx.viewpager2)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

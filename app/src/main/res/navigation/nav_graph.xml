@@ -5,6 +5,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
+    <!-- Login and Register Fragments -->
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.expensetrackerapp.ui.auth.LoginFragment"
@@ -28,6 +29,7 @@
             app:destination="@id/loginFragment" />
     </fragment>
 
+    <!-- Main Group Fragment -->
     <fragment
         android:id="@+id/groupFragment"
         android:name="com.example.expensetrackerapp.ui.group.GroupFragment"
@@ -37,8 +39,21 @@
             android:id="@+id/action_groupFragment_to_groupDetailFragment"
             app:destination="@id/groupDetailFragment" />
         <action
-            android:id="@+id/action_groupFragment_to_groupOverviewFragment"
-            app:destination="@id/groupOverviewFragment" />
+            android:id="@+id/action_groupFragment_to_groupTabsFragment"
+            app:destination="@id/groupTabsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/groupTabsFragment"
+        android:name="com.example.expensetrackerapp.ui.group.GroupTabsFragment"
+        android:label="Group Overview and Summary"
+        tools:layout="@layout/fragment_group_tabs">
+        <argument
+            android:name="groupId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_groupTabsFragment_to_groupDetailFragment"
+            app:destination="@id/groupDetailFragment" />
     </fragment>
 
     <fragment
@@ -46,18 +61,5 @@
         android:name="com.example.expensetrackerapp.ui.group.GroupDetailFragment"
         android:label="Group Details"
         tools:layout="@layout/fragment_group_detail" />
-
-    <fragment
-        android:id="@+id/groupOverviewFragment"
-        android:name="com.example.expensetrackerapp.ui.group.GroupOverviewFragment"
-        android:label="Group Overview"
-        tools:layout="@layout/fragment_group_overview">
-        <argument
-            android:name="groupId"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_groupOverviewFragment_to_groupDetailFragment"
-            app:destination="@id/groupDetailFragment" />
-    </fragment>
 
 </navigation>

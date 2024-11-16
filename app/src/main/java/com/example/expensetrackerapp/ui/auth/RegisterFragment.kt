@@ -1,3 +1,5 @@
+package com.example.expensetrackerapp.ui.auth
+
 import com.example.expensetrackerapp.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

@@ -46,7 +46,7 @@ class GroupFragment : Fragment() {
                 val bundle = Bundle().apply {
                     putString("groupId", group.id)
                 }
-                findNavController().navigate(R.id.action_groupFragment_to_groupOverviewFragment, bundle)
+                findNavController().navigate(R.id.action_groupFragment_to_groupTabsFragment, bundle)
             }
         )
 

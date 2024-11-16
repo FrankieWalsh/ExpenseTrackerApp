@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- fragment_group_overview.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
-    <!-- Group Name -->
+    <!-- Group Name at the top -->
     <TextView
         android:id="@+id/textViewGroupName"
         android:layout_width="wrap_content"
@@ -15,20 +15,38 @@
         android:textStyle="bold"
         android:text="Group Name" />
 
-    <!-- Group Description -->
+    <!-- Group Description below the group name -->
     <TextView
         android:id="@+id/textViewGroupDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="Group Description" />
 
+    <!-- Edit Group button -->
     <Button
         android:id="@+id/buttonEditGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edit Group"
-        android:visibility="gone" /> <!-- Initially hidden -->
+        android:visibility="gone"
+        android:layout_marginTop="8dp" />
 
+    <!-- Expenses RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewExpenses"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp" />
+
+    <!-- Add Expense button -->
+    <Button
+        android:id="@+id/buttonAddExpense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Expense"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"/>
 </LinearLayout>
