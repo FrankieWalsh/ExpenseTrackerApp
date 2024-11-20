@@ -62,4 +62,14 @@
         android:label="Group Details"
         tools:layout="@layout/fragment_group_detail" />
 
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.expensetrackerapp.ui.auth.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_groupFragment"
+            app:destination="@id/groupFragment" />
+    </fragment>
+
 </navigation>
