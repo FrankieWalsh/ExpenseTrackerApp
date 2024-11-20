@@ -78,14 +78,19 @@
         android:clipToPadding="false" />
 
     <!-- Floating Action Button for creating new group -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/fabCreateGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Create Group"
         android:contentDescription="Create Group"
-        android:src="@drawable/ic_add"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@android:color/white" />
+        app:cornerRadius="0dp"
+        android:gravity="center"
+        app:iconPadding="10dp"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
