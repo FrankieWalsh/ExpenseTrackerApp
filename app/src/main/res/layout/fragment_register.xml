@@ -1,37 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:background="?attr/colorPrimary"
+    android:gravity="center"
+    android:orientation="vertical"
     android:padding="24dp">
 
     <!-- Card Container -->
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="539dp"
+        android:layout_height="321dp"
+        android:layout_marginBottom="0dp"
+        android:contentDescription="App Logo"
+        android:src="@drawable/ic_logo_white3" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="?attr/colorPrimaryVariant"
-        android:padding="24dp"
-        android:elevation="8dp"
+        android:layout_gravity="center"
         android:layout_margin="16dp"
+        android:background="?attr/colorPrimaryVariant"
         android:clipToOutline="true"
-        android:layout_gravity="center">
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:padding="24dp">
 
         <!-- Name Input Field -->
         <EditText
             android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/white"
             android:hint="Name"
             android:inputType="textPersonName"
-            android:backgroundTint="@color/white"
+            android:padding="12dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
             android:textStyle="bold" />
 
         <!-- Email Input Field -->
@@ -39,13 +47,13 @@
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/white"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            android:backgroundTint="@color/white"
+            android:padding="12dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
             android:textStyle="bold" />
 
         <!-- Password Input Field -->
@@ -53,13 +61,13 @@
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/white"
             android:hint="Password"
             android:inputType="textPassword"
-            android:backgroundTint="@color/white"
+            android:padding="12dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
             android:textStyle="bold" />
 
         <!-- Register Button -->
@@ -67,8 +75,8 @@
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Register"
             android:backgroundTint="@color/white"
+            android:text="Register"
             android:textColor="?attr/colorPrimary"
             android:textStyle="bold" />
     </LinearLayout>
@@ -78,10 +86,10 @@
         android:id="@+id/loginLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Already have an account? Login"
-        android:textColor="@android:color/holo_blue_light"
         android:layout_marginTop="16dp"
         android:clickable="true"
         android:focusable="true"
+        android:text="Already have an account? Login"
+        android:textColor="?attr/colorPrimaryVariant"
         android:textStyle="bold" />
 </LinearLayout>
