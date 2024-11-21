@@ -19,6 +19,7 @@ import android.app.AlertDialog
 import android.widget.EditText
 import android.widget.Button
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
 import com.example.expensetrackerapp.model.GroupMember
 import com.google.android.material.button.MaterialButton
@@ -70,7 +71,7 @@ class GroupFragment : Fragment() {
         }
 
         // Set up Floating Action Button to create new groups
-        view.findViewById<MaterialButton>(R.id.fabCreateGroup).setOnClickListener {
+        view.findViewById<ImageView>(R.id.fabCreateGroup).setOnClickListener {
             findNavController().navigate(R.id.action_groupFragment_to_groupDetailFragment)
         }
 
