@@ -33,6 +33,24 @@
         android:visibility="gone"
         android:layout_marginTop="8dp" />
 
+    <!-- Filter selection   -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutFilterCategories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="">
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteFilterCategories"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:inputType="none"
+            android:focusable="false"
+            android:clickable="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
     <!-- Expenses RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewExpenses"

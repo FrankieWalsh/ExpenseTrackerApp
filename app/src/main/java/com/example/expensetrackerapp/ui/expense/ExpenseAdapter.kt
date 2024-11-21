@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ExpenseAdapter(
-    private val expenses: List<Expense>,
+    private var expenses: List<Expense>,
     private val onPayClick: (Expense) -> Unit // Callback for "Pay" button click
 ) : RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
 
@@ -30,6 +30,11 @@ class ExpenseAdapter(
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_expense, parent, false)
         return ExpenseViewHolder(view)
     }
+    fun updateExpenses(newExpenses: List<Expense>) {
+        expenses = newExpenses
+        notifyDataSetChanged()
+    }
+
 
     override fun onBindViewHolder(holder: ExpenseViewHolder, position: Int) {
         val expense = expenses[position]

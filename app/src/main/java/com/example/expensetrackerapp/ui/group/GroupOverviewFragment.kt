@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
@@ -33,6 +35,8 @@ class GroupOverviewFragment : Fragment() {
     private var groupId: String? = null
     private val expenses = mutableListOf<Expense>()
     private lateinit var expenseAdapter: ExpenseAdapter
+    private val selectedCategories = mutableSetOf<String>() // Store selected categories
+    private lateinit var categoryAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +52,20 @@ class GroupOverviewFragment : Fragment() {
         val editButton = view.findViewById<Button>(R.id.buttonEditGroup)
         val expensesRecyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewExpenses)
         val addExpenseButton = view.findViewById<Button>(R.id.buttonAddExpense)
+
+        val autoCompleteFilterCategories: AutoCompleteTextView =
+            view.findViewById(R.id.autoCompleteFilterCategories)
+
+        val categories = resources.getStringArray(R.array.expense_categories)
+        updateDialogText(autoCompleteFilterCategories)
+        categoryAdapter = ArrayAdapter(requireContext(),
+            android.R.layout.simple_list_item_multiple_choice, categories)
+            autoCompleteFilterCategories.setAdapter(categoryAdapter)
+
+        autoCompleteFilterCategories.setOnClickListener {
+            showMultiSelectDialog(categories, autoCompleteFilterCategories)
+        }
+
 
         // Setup Add Expense button
         addExpenseButton.setOnClickListener { showAddExpenseDialog() }
@@ -119,6 +137,45 @@ class GroupOverviewFragment : Fragment() {
                 }
         }
     }
+
+    private fun showMultiSelectDialog(categories: Array<String>, autoCompleteTextView: AutoCompleteTextView) {
+        val selectedItems = BooleanArray(categories.size) { selectedCategories.contains(categories[it]) }
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Select Categories")
+            .setMultiChoiceItems(categories, selectedItems) { _, index, isChecked ->
+                if (isChecked) {
+                    selectedCategories.add(categories[index]) // Add selected category
+                } else {
+                    selectedCategories.remove(categories[index]) // Remove unselected category
+                }
+            }
+            .setPositiveButton("OK") { _, _ ->
+                updateDialogText(autoCompleteTextView)
+                filterExpensesByCategories(selectedCategories)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun updateDialogText(autoCompleteTextView: AutoCompleteTextView) {
+        autoCompleteTextView.setText(
+            if (selectedCategories.isEmpty()) "All Categories" else selectedCategories.joinToString(", ")
+        )
+    }
+
+    private fun filterExpensesByCategories(categories: Set<String>) {
+        val allExpenses = expenses // Replace with your actual expense list
+        val filteredExpenses = if (categories.isEmpty()) {
+            allExpenses
+        } else {
+            allExpenses.filter { it.category in categories }
+        }
+        expenseAdapter.updateExpenses(filteredExpenses)
+
+        // Update your RecyclerView adapter here
+    }
+
 
     private fun showAddExpenseDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_expense, null)
