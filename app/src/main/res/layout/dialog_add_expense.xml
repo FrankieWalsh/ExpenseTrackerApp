@@ -19,4 +19,12 @@
         android:hint="Amount"
         android:inputType="numberDecimal" />
 
+    <Spinner
+        android:id="@+id/spinnerCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/expense_categories"
+        android:prompt="@string/select_category_prompt"
+        android:layout_marginTop="16dp" />
+
 </LinearLayout>

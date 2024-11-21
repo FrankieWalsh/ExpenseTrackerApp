@@ -7,5 +7,6 @@ data class Expense(
     val description: String = "",
     val payerId: String = "",
     val receiptPhotoUrl: String? = null,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val category: String = "General"
 )
