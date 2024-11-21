@@ -5,8 +5,8 @@
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_profile"
-        android:title="Profile"
-        app:showAsAction="always" />
+        android:title="Profileee"
+        app:showAsAction="always"  />
 
     <!-- Notificacion Button -->
     <item

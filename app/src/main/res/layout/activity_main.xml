@@ -16,7 +16,7 @@
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             android:background="?attr/colorPrimary"
-            app:titleTextColor="@android:color/black"
+            app:titleTextColor="@color/textColorSecondary"
             android:elevation="4dp" />
 
 

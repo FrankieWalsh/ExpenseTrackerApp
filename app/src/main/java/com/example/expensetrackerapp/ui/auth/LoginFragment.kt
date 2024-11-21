@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.expensetrackerapp.R
 import com.example.expensetrackerapp.viewmodel.AuthViewModel
+import android.graphics.Paint
 
 class LoginFragment : Fragment() {
 
@@ -28,6 +29,15 @@ class LoginFragment : Fragment() {
         val passwordEditText = view.findViewById<EditText>(R.id.passwordEditText)
         val loginButton = view.findViewById<Button>(R.id.loginButton)
         val registerLink = view.findViewById<TextView>(R.id.registerLink)
+        registerLink.paintFlags = registerLink.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+
+        val context = requireContext()
+        val textColor = context.getColor(R.color.textColorSecondary)
+
+
+        // Apply the text color to the UI components
+        emailEditText.setTextColor(textColor)
+        passwordEditText.setTextColor(textColor)
 
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString()

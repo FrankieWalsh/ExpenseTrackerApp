@@ -7,39 +7,44 @@
     android:padding="16dp">
 
     <!-- Container for the header section (Your Groups and No Groups message) -->
+
+    <!-- Container for invitations -->
+
     <LinearLayout
         android:id="@+id/headerContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- "Your Groups" header -->
         <TextView
             android:id="@+id/textViewGroupHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your Groups"
-            android:textAppearance="?attr/textAppearanceHeadline6"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:text="Your Groups"
+            android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <!-- Message displayed when there are no groups or invitations -->
         <TextView
             android:id="@+id/textViewNoGroups"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You are not in any groups yet. Create a new group or wait for an invitation."
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:gravity="center"
             android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:padding="8dp"
+            android:text="You are not in any groups yet. Create a new group or wait for an invitation."
+            android:textColor="@color/textColorPrimary"
+            android:textAppearance="?attr/textAppearanceBody1"
             android:visibility="gone" />
     </LinearLayout>
 
-    <!-- Container for invitations -->
     <LinearLayout
         android:id="@+id/invitationsContainer"
         android:layout_width="0dp"

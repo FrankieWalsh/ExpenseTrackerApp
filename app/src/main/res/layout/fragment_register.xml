@@ -5,7 +5,8 @@
     android:background="?attr/colorPrimary"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:theme="@style/Theme.ExpenseTrackerApp.LoginOverlay">
 
     <!-- Card Container -->
 

@@ -29,11 +29,19 @@ class GroupAdapter(
         holder.groupName.text = group.name
         holder.groupDescription.text = group.description
 
+        val context = holder.itemView.context
+        val backgroundColor = context.getColor(R.color.group_item_background)
+        val textColor = context.getColor(R.color.textColorPrimary) // Assuming white text for dark mode
+
+        holder.itemView.setBackgroundColor(backgroundColor)
+        holder.groupName.setTextColor(textColor)
+        holder.groupDescription.setTextColor(textColor)
         // Make the entire item view clickable
         holder.itemView.setOnClickListener {
             onGroupClick(group)
         }
     }
+
 
     override fun getItemCount(): Int = groups.size
 }

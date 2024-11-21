@@ -6,7 +6,8 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="?attr/colorPrimary"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:theme="@style/Theme.ExpenseTrackerApp.LoginOverlay">
 
     <!-- Logo -->
     <ImageView
@@ -15,7 +16,7 @@
         android:layout_height="321dp"
         android:layout_marginBottom="0dp"
         android:contentDescription="App Logo"
-        android:src="@drawable/ic_logo_white3" />
+        android:src="@drawable/ic_logo_login" />
 
     <!-- Card Container -->
     <LinearLayout
@@ -38,12 +39,11 @@
             android:layout_height="wrap_content"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
+            android:backgroundTint="@color/textColorSecondary"
+            android:textColor="@color/textColorSecondary"
+            android:textColorHint="@color/textColorSecondary"
             android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="16dp"/>
 
         <!-- Password Input Field -->
         <EditText
@@ -52,12 +52,11 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:inputType="textPassword"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
+            android:backgroundTint="@color/textColorSecondary"
+            android:textColor="@color/textColorSecondary"
+            android:textColorHint="@color/textColorSecondary"
             android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="16dp" />
 
         <!-- Login Button -->
         <Button
@@ -65,8 +64,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Login"
-            android:backgroundTint="@color/white"
-            android:textColor="?attr/colorPrimary"
+            android:backgroundTint="@color/textColorSecondary"
+            android:textColor="@color/textColorPrimary"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -79,6 +78,5 @@
         android:textColor="?attr/colorPrimaryVariant"
         android:layout_marginTop="16dp"
         android:clickable="true"
-        android:focusable="true"
-        android:textStyle="bold" />
+        android:focusable="true" />
 </LinearLayout>

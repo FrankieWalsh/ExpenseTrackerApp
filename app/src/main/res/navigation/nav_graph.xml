@@ -34,6 +34,7 @@
         android:id="@+id/groupFragment"
         android:name="com.example.expensetrackerapp.ui.group.GroupFragment"
         android:label="Groups"
+        android:textColor="@color/textColorSecondary"
         tools:layout="@layout/fragment_group">
         <action
             android:id="@+id/action_groupFragment_to_groupDetailFragment"
@@ -47,6 +48,7 @@
         android:id="@+id/groupTabsFragment"
         android:name="com.example.expensetrackerapp.ui.group.GroupTabsFragment"
         android:label="Group Overview and Summary"
+        android:textColor="@color/textColorSecondary"
         tools:layout="@layout/fragment_group_tabs">
         <argument
             android:name="groupId"
@@ -60,12 +62,14 @@
         android:id="@+id/groupDetailFragment"
         android:name="com.example.expensetrackerapp.ui.group.GroupDetailFragment"
         android:label="Group Details"
+        android:textColor="@color/textColorSecondary"
         tools:layout="@layout/fragment_group_detail" />
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.expensetrackerapp.ui.auth.ProfileFragment"
         android:label="Profile"
+        android:textColor="@color/textColorSecondary"
         tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_groupFragment"
