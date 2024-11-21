@@ -42,20 +42,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Change Password"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/textColorSecondary"/>
 
         <Button
             android:id="@+id/buttonSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Changes" />
+            android:text="Save Changes"
+            android:textColor="@color/textColorSecondary"/>
         <Button
             android:id="@+id/buttonGoToGroups"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Go to Home"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:textColor="@color/textColorSecondary"/>
 
     </LinearLayout>
 </ScrollView>
