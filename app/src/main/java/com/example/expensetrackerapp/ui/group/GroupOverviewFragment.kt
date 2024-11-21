@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
@@ -51,7 +52,7 @@ class GroupOverviewFragment : Fragment() {
         val groupDescriptionTextView = view.findViewById<TextView>(R.id.textViewGroupDescription)
         val editButton = view.findViewById<Button>(R.id.buttonEditGroup)
         val expensesRecyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewExpenses)
-        val addExpenseButton = view.findViewById<Button>(R.id.buttonAddExpense)
+        val addExpenseButton = view.findViewById<ImageView>(R.id.fabAddExpense)
 
         val autoCompleteFilterCategories: AutoCompleteTextView =
             view.findViewById(R.id.autoCompleteFilterCategories)
@@ -66,9 +67,13 @@ class GroupOverviewFragment : Fragment() {
             showMultiSelectDialog(categories, autoCompleteFilterCategories)
         }
 
+        // Set up Floating Action Button to create new groups
+        view.findViewById<ImageView>(R.id.fabAddExpense).setOnClickListener {
+            showAddExpenseDialog()
+        }
 
         // Setup Add Expense button
-        addExpenseButton.setOnClickListener { showAddExpenseDialog() }
+        // addExpenseButton.setOnClickListener { showAddExpenseDialog() }
 
         // Initialize RecyclerView
         expenseAdapter = ExpenseAdapter(expenses) { expense ->
