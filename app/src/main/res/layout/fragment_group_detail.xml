@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:hint="Group Name"
         android:inputType="text"
-        android:padding="12dp" />
+        android:padding="12dp"
+        android:layout_marginTop="?attr/actionBarSize" />
 
     <!-- Group Description Input Field -->
     <EditText
