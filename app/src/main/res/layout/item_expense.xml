@@ -12,6 +12,13 @@
         android:layout_height="wrap_content"
         android:textSize="18sp" />
 
+
+    <TextView
+        android:id="@+id/textViewExpenseCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp" />
+
     <TextView
         android:id="@+id/textViewExpenseAmount"
         android:layout_width="wrap_content"

@@ -21,6 +21,7 @@ class ExpenseAdapter(
 
     inner class ExpenseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val descriptionTextView: TextView = itemView.findViewById(R.id.textViewExpenseDescription)
+        val categoryTextView: TextView = itemView.findViewById(R.id.textViewExpenseCategory)
         val amountTextView: TextView = itemView.findViewById(R.id.textViewExpenseAmount)
         val payButton: Button = itemView.findViewById(R.id.buttonPay)
     }
@@ -33,6 +34,7 @@ class ExpenseAdapter(
     override fun onBindViewHolder(holder: ExpenseViewHolder, position: Int) {
         val expense = expenses[position]
         holder.descriptionTextView.text = expense.description
+        holder.categoryTextView.text = expense.category
 
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 

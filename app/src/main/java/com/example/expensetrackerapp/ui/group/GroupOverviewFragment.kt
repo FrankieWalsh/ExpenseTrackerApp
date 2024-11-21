@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -123,6 +125,21 @@ class GroupOverviewFragment : Fragment() {
         val descriptionEditText = dialogView.findViewById<EditText>(R.id.editTextExpenseDescription)
         val amountEditText = dialogView.findViewById<EditText>(R.id.editTextExpenseAmount)
 
+        var selectedCategory = "General" // Default to "General"
+        val spinnerCategory: Spinner = dialogView.findViewById<Spinner>(R.id.spinnerCategory)
+
+        spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                // Get the selected category
+                selectedCategory = parent.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Optional: Handle the case where nothing is selected
+            }
+        }
+
+
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Add New Expense")
             .setView(dialogView)
@@ -133,20 +150,21 @@ class GroupOverviewFragment : Fragment() {
                 if (description.isEmpty() || amount == null) {
                     Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 } else {
-                    addExpense(description, amount, FirebaseAuth.getInstance().currentUser?.uid ?: "")
+                    addExpense(description, amount, FirebaseAuth.getInstance().currentUser?.uid ?: "", selectedCategory)
                 }
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
-    private fun addExpense(description: String, amount: Double, payerId: String) {
+    private fun addExpense(description: String, amount: Double, payerId: String, selectedCategory: String) {
         val expense = Expense(
             groupId = groupId ?: "",
             amount = amount,
             description = description,
             payerId = payerId,
-            createdAt = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            category = selectedCategory
         )
         firestore.collection("expenses")
             .add(expense)
