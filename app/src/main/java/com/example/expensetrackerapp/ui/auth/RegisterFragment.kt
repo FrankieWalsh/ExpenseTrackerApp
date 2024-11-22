@@ -12,7 +12,9 @@ import androidx.fragment.app.Fragment
 import com.example.expensetrackerapp.R
 import android.widget.EditText
 import android.widget.Button
+import android.widget.TextView
 import androidx.navigation.fragment.findNavController
+import android.graphics.Paint
 
 class RegisterFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -31,7 +33,12 @@ class RegisterFragment : Fragment() {
         val passwordEditText = view.findViewById<EditText>(R.id.editTextPassword)
         val nameEditText = view.findViewById<EditText>(R.id.editTextName)
         val registerButton = view.findViewById<Button>(R.id.buttonRegister)
+        val loginLink = view.findViewById<TextView>(R.id.loginLink)
+        loginLink.paintFlags = loginLink.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
+        loginLink.setOnClickListener {
+            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        }
         registerButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()

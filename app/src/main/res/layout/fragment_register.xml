@@ -16,7 +16,7 @@
         android:layout_height="321dp"
         android:layout_marginBottom="0dp"
         android:contentDescription="App Logo"
-        android:src="@drawable/ic_logo_white3" />
+        android:src="@drawable/ic_logo_login" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,13 +35,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/textColorSecondary"
             android:hint="Name"
             android:inputType="textPersonName"
             android:padding="12dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textStyle="bold" />
+            android:textColor="@color/textColorSecondary"
+            android:textColorHint="@color/textColorSecondary" />
 
         <!-- Email Input Field -->
         <EditText
@@ -49,13 +48,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/textColorSecondary"
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:padding="12dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textStyle="bold" />
+            android:textColor="@color/textColorSecondary"
+            android:textColorHint="@color/textColorSecondary" />
 
         <!-- Password Input Field -->
         <EditText
@@ -63,13 +61,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/textColorSecondary"
             android:hint="Password"
             android:inputType="textPassword"
             android:padding="12dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textStyle="bold" />
+            android:textColor="@color/textColorSecondary"
+            android:textColorHint="@color/textColorSecondary" />
 
         <!-- Register Button -->
         <Button
@@ -78,7 +75,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/white"
             android:text="Register"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="?attr/colorTertiary"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -91,6 +88,5 @@
         android:clickable="true"
         android:focusable="true"
         android:text="Already have an account? Login"
-        android:textColor="?attr/colorPrimaryVariant"
-        android:textStyle="bold" />
+        android:textColor="?attr/colorPrimaryVariant" />
 </LinearLayout>
