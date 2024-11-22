@@ -26,5 +26,19 @@
         android:entries="@array/expense_categories"
         android:prompt="@string/select_category_prompt"
         android:layout_marginTop="16dp" />
+    <TextView
+        android:id="@+id/textViewSelectMembers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Members to Split With"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp" />
+
+    <ListView
+        android:id="@+id/listViewMembers"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:choiceMode="multipleChoice" />
+
 
 </LinearLayout>

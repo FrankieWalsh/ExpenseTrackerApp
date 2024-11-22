@@ -10,6 +10,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ListView
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
@@ -29,6 +30,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.example.expensetrackerapp.model.User
+
 
 class GroupOverviewFragment : Fragment() {
 
@@ -39,6 +42,8 @@ class GroupOverviewFragment : Fragment() {
     private lateinit var expenseAdapter: ExpenseAdapter
     private val selectedCategories = mutableSetOf<String>()
     private lateinit var categoryAdapter: ArrayAdapter<String>
+    private val groupMembers = mutableListOf<User>()
+    private lateinit var groupMemberAdapter: GroupMemberAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +54,10 @@ class GroupOverviewFragment : Fragment() {
         groupId = arguments?.getString("groupId")
 
         // Initialize UI elements
+        groupMemberAdapter = GroupMemberAdapter(groupMembers)
+        val recyclerViewGroupMembers = view.findViewById<RecyclerView>(R.id.recyclerViewGroupMembers)
+        recyclerViewGroupMembers.layoutManager = LinearLayoutManager(requireContext())
+        recyclerViewGroupMembers.adapter = groupMemberAdapter
         val groupNameTextView = view.findViewById<TextView>(R.id.textViewGroupName)
         val groupDescriptionTextView = view.findViewById<TextView>(R.id.textViewGroupDescription)
         val editButton = view.findViewById<Button>(R.id.buttonEditGroup)
@@ -121,8 +130,41 @@ class GroupOverviewFragment : Fragment() {
 
         // Fetch expenses for the group
         fetchExpenses()
+        fetchGroupMembers()
 
         return view
+    }
+
+    private fun fetchGroupMembers() {
+        groupId?.let { id ->
+            firestore.collection("group_members")
+                .whereEqualTo("groupId", id)
+                .get()
+                .addOnSuccessListener { result ->
+                    val userIds = result.documents.mapNotNull { it.getString("userId") }
+                    if (userIds.isNotEmpty()) {
+                        // Fetch user details
+                        firestore.collection("users")
+                            .whereIn("id", userIds)
+                            .get()
+                            .addOnSuccessListener { userResult ->
+                                groupMembers.clear()
+                                for (userDoc in userResult) {
+                                    val user = userDoc.toObject(User::class.java)
+                                    user.id = userDoc.id
+                                    groupMembers.add(user)
+                                }
+                                groupMemberAdapter.notifyDataSetChanged()
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(requireContext(), "Error fetching users: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Error fetching group members: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
     }
 
     private fun fetchExpenses() {
@@ -185,21 +227,23 @@ class GroupOverviewFragment : Fragment() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_expense, null)
         val descriptionEditText = dialogView.findViewById<EditText>(R.id.editTextExpenseDescription)
         val amountEditText = dialogView.findViewById<EditText>(R.id.editTextExpenseAmount)
+        val spinnerCategory: Spinner = dialogView.findViewById(R.id.spinnerCategory)
+        val listViewMembers = dialogView.findViewById<ListView>(R.id.listViewMembers)
 
         var selectedCategory = "General"
-        val spinnerCategory: Spinner = dialogView.findViewById<Spinner>(R.id.spinnerCategory)
-
         spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                // Get the selected category
                 selectedCategory = parent.getItemAtPosition(position).toString()
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Optional: Handle the case where nothing is selected
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
+        // Fetch group members for selection
+        val memberNames = groupMembers.map { it.name ?: it.email }
+        val memberIds = groupMembers.map { it.id }
+
+        val arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_multiple_choice, memberNames)
+        listViewMembers.adapter = arrayAdapter
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Add New Expense")
@@ -208,17 +252,28 @@ class GroupOverviewFragment : Fragment() {
                 val description = descriptionEditText.text.toString()
                 val amount = amountEditText.text.toString().toDoubleOrNull()
 
-                if (description.isEmpty() || amount == null) {
-                    Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                // Get selected member IDs
+                val selectedPositions = listViewMembers.checkedItemPositions
+                val selectedMemberIds = mutableListOf<String>()
+                for (i in 0 until selectedPositions.size()) {
+                    val position = selectedPositions.keyAt(i)
+                    if (selectedPositions.valueAt(i)) {
+                        selectedMemberIds.add(memberIds[position])
+                    }
+                }
+
+                if (description.isEmpty() || amount == null || selectedMemberIds.isEmpty()) {
+                    Toast.makeText(requireContext(), "Please fill in all fields and select at least one member", Toast.LENGTH_SHORT).show()
                 } else {
-                    addExpense(description, amount, FirebaseAuth.getInstance().currentUser?.uid ?: "", selectedCategory)
+                    addExpense(description, amount, FirebaseAuth.getInstance().currentUser?.uid ?: "", selectedCategory, selectedMemberIds)
                 }
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
-    private fun addExpense(description: String, amount: Double, payerId: String, category: String) {
+
+    private fun addExpense(description: String, amount: Double, payerId: String, category: String, selectedMemberIds: List<String>) {
         val expense = Expense(
             groupId = groupId ?: "",
             amount = amount,
@@ -237,50 +292,36 @@ class GroupOverviewFragment : Fragment() {
                     filteredExpenses.add(0, expense)
                     expenseAdapter.notifyItemInserted(0)
                 }
-                addExpenseSplits(expense)
+                addExpenseSplits(expense, selectedMemberIds)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), "Error adding expense: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    // GroupOverviewFragment.kt
-    private fun addExpenseSplits(expense: Expense) {
-        groupId?.let { groupId ->
-            firestore.collection("group_members")
-                .whereEqualTo("groupId", groupId)
-                .get()
-                .addOnSuccessListener { result ->
-                    val memberCount = result.size()
-                    if (memberCount > 0) {
-                        val splitAmount = expense.amount / memberCount
-                        for (document in result) {
-                            val userId = document.getString("userId") ?: continue
 
-                            // Skip creating a split for the person who created the expense
-                            if (userId == expense.payerId) {
-                                continue
-                            }
+    private fun addExpenseSplits(expense: Expense, selectedMemberIds: List<String>) {
+        val memberCount = selectedMemberIds.size
+        if (memberCount > 0) {
+            val splitAmount = expense.amount / memberCount
+            for (userId in selectedMemberIds) {
+                // Skip creating a split for the payer
+                if (userId == expense.payerId) continue
 
-                            // Create an ExpenseSplit with groupId and owedTo
-                            val expenseSplit = ExpenseSplit(
-                                expenseId = expense.id,
-                                userId = userId,
-                                groupId = groupId,  // Set the groupId for each split
-                                owedTo = expense.payerId,  // Set owedTo as the ID of the expense creator
-                                amount = splitAmount,
-                                hasPaid = false
-                            )
+                val expenseSplit = ExpenseSplit(
+                    expenseId = expense.id,
+                    userId = userId,
+                    groupId = groupId ?: "",
+                    owedTo = expense.payerId,
+                    amount = splitAmount,
+                    hasPaid = false
+                )
 
-                            firestore.collection("expense_splits").add(expenseSplit)
-                        }
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Error fetching members: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+                firestore.collection("expense_splits").add(expenseSplit)
+            }
         }
     }
+
 
 
 

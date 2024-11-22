@@ -30,6 +30,24 @@
         android:layout_marginTop="4dp"
         android:text="Group Description" />
 
+    <!-- Members Label -->
+    <TextView
+        android:id="@+id/textViewMembersLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Members:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp" />
+
+    <!-- RecyclerView to display members -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewGroupMembers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp" />
+
+
     <!-- Edit Group button -->
     <Button
         android:id="@+id/buttonEditGroup"
