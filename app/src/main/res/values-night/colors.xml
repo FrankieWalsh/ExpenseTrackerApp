@@ -16,6 +16,7 @@
     <color name="green_grey_40">#859A9F</color>
     <color name="blue_40">#859A9F</color>
     <color name="blue_80">#D0E6E0</color>
+    <color name="delete_color">#D56B6B</color>
 
     <color name="group_item_background">#303030</color>
     <color name="textColorPrimary">#FFFFFF</color>

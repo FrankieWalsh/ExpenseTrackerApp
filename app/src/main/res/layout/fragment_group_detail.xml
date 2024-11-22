@@ -59,6 +59,18 @@
         android:layout_height="wrap_content"
         android:text="Create Group"
         android:layout_marginTop="16dp"
-        android:textColor="@color/textColorSecondary"/>
+        android:textColor="@color/textColorSecondary"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/buttonDeleteGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Group"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/delete_color"
+        android:textColor="@color/textColorSecondary"
+        android:textStyle="bold"/>
 
 </LinearLayout>

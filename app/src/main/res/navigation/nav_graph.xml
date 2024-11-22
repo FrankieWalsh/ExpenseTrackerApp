@@ -63,7 +63,11 @@
         android:name="com.example.expensetrackerapp.ui.group.GroupDetailFragment"
         android:label="Group Details"
         android:textColor="@color/textColorSecondary"
-        tools:layout="@layout/fragment_group_detail" />
+        tools:layout="@layout/fragment_group_detail">
+        <action
+            android:id="@+id/action_groupDetailFragment_to_groupFragment"
+            app:destination="@id/groupFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
@@ -75,5 +79,7 @@
             android:id="@+id/action_profileFragment_to_groupFragment"
             app:destination="@id/groupFragment" />
     </fragment>
+
+
 
 </navigation>

@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.EditText
 import android.widget.Button
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetrackerapp.model.GroupMember
@@ -43,6 +44,7 @@ class GroupDetailFragment : Fragment() {
         val inviteEmailEditText = view.findViewById<EditText>(R.id.editTextInviteEmail)
         val addEmailButton = view.findViewById<Button>(R.id.buttonAddEmail)
         val createGroupButton = view.findViewById<Button>(R.id.buttonCreateGroup)
+        val deleteGroupButton = view.findViewById<Button>(R.id.buttonDeleteGroup)
 
         inviteEmailAdapter = InviteEmailAdapter(inviteEmails)
         view.findViewById<RecyclerView>(R.id.recyclerViewInvitedEmails).apply {
@@ -77,7 +79,12 @@ class GroupDetailFragment : Fragment() {
                 Toast.makeText(requireContext(), "Group name required", Toast.LENGTH_SHORT).show()
             }
         }
-
+        deleteGroupButton.visibility = if (isEditMode) View.VISIBLE else View.GONE
+        deleteGroupButton.setOnClickListener {
+            groupId?.let { id ->
+                deleteGroup(id)
+            } ?: Toast.makeText(requireContext(), "Group ID not found", Toast.LENGTH_SHORT).show()
+        }
         return view
     }
 
@@ -216,4 +223,43 @@ class GroupDetailFragment : Fragment() {
                 onComplete()
             }
     }
+
+    private fun deleteGroup(groupId: String) {
+        firestore.collection("groups").document(groupId).delete()
+            .addOnSuccessListener {
+                // Borrar los miembros del grupo
+                firestore.collection("group_members")
+                    .whereEqualTo("groupId", groupId)
+                    .get()
+                    .addOnSuccessListener { members ->
+                        for (member in members) {
+                            firestore.collection("group_members").document(member.id).delete()
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("GroupDetailFragment", "Error deleting group members: ${e.message}")
+                    }
+
+                // Borrar las invitaciones relacionadas
+                firestore.collection("invitations")
+                    .whereEqualTo("groupId", groupId)
+                    .get()
+                    .addOnSuccessListener { invitations ->
+                        for (invitation in invitations) {
+                            firestore.collection("invitations").document(invitation.id).delete()
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("GroupDetailFragment", "Error deleting invitations: ${e.message}")
+                    }
+
+                Toast.makeText(requireContext(), "Group deleted successfully", Toast.LENGTH_SHORT).show()
+                val navController = parentFragmentManager.findFragmentById(R.id.nav_host_fragment)?.findNavController()
+                navController?.navigate(R.id.action_groupDetailFragment_to_groupFragment)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error deleting group: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 }
