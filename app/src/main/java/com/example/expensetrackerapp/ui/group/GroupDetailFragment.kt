@@ -150,13 +150,26 @@ class GroupDetailFragment : Fragment() {
                 .update("name", name, "description", description)
                 .addOnSuccessListener {
                     Toast.makeText(requireContext(), "Group updated successfully", Toast.LENGTH_SHORT).show()
-                    parentFragmentManager.popBackStack() // Navigate back to the previous screen
+                    if (inviteEmails.isNotEmpty()) {
+                        var invitationsProcessed = 0
+                        for (email in inviteEmails) {
+                            sendInvitation(id, email) {
+                                invitationsProcessed++
+                                if (invitationsProcessed == inviteEmails.size) {
+                                    parentFragmentManager.popBackStack()
+                                }
+                            }
+                        }
+                    } else {
+                        parentFragmentManager.popBackStack() // Navigate back to the previous screen
+                    }
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(requireContext(), "Error updating group: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
+
 
     private fun addGroupMember(groupId: String, userId: String, isCreator: Boolean = false) {
         val groupMember = GroupMember(
