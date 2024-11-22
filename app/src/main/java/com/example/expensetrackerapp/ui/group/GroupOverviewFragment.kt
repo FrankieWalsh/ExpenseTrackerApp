@@ -34,9 +34,10 @@ class GroupOverviewFragment : Fragment() {
 
     private lateinit var firestore: FirebaseFirestore
     private var groupId: String? = null
-    private val expenses = mutableListOf<Expense>()
+    private val allExpenses = mutableListOf<Expense>()
+    private val filteredExpenses = mutableListOf<Expense>()
     private lateinit var expenseAdapter: ExpenseAdapter
-    private val selectedCategories = mutableSetOf<String>() // Store selected categories
+    private val selectedCategories = mutableSetOf<String>()
     private lateinit var categoryAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
@@ -76,9 +77,10 @@ class GroupOverviewFragment : Fragment() {
         // addExpenseButton.setOnClickListener { showAddExpenseDialog() }
 
         // Initialize RecyclerView
-        expenseAdapter = ExpenseAdapter(expenses) { expense ->
+        expenseAdapter = ExpenseAdapter(filteredExpenses) { expense ->
             showPaymentDialog(expense)
         }
+
         expensesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         expensesRecyclerView.adapter = expenseAdapter
 
@@ -129,19 +131,29 @@ class GroupOverviewFragment : Fragment() {
                 .whereEqualTo("groupId", id)
                 .get()
                 .addOnSuccessListener { result ->
-                    expenses.clear()
+                    allExpenses.clear()
                     for (document in result) {
                         val expense = document.toObject(Expense::class.java)
                         expense.id = document.id
-                        expenses.add(expense)
+                        allExpenses.add(expense)
                     }
-                    expenseAdapter.notifyDataSetChanged()
+                    updateFilteredExpenses()
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(requireContext(), "Error fetching expenses: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
+
+    private fun updateFilteredExpenses() {
+        filteredExpenses.clear()
+        filteredExpenses.addAll(
+            if (selectedCategories.isEmpty()) allExpenses
+            else allExpenses.filter { it.category in selectedCategories }
+        )
+        expenseAdapter.notifyDataSetChanged()
+    }
+
 
     private fun showMultiSelectDialog(categories: Array<String>, autoCompleteTextView: AutoCompleteTextView) {
         val selectedItems = BooleanArray(categories.size) { selectedCategories.contains(categories[it]) }
@@ -150,14 +162,14 @@ class GroupOverviewFragment : Fragment() {
             .setTitle("Select Categories")
             .setMultiChoiceItems(categories, selectedItems) { _, index, isChecked ->
                 if (isChecked) {
-                    selectedCategories.add(categories[index]) // Add selected category
+                    selectedCategories.add(categories[index])
                 } else {
-                    selectedCategories.remove(categories[index]) // Remove unselected category
+                    selectedCategories.remove(categories[index])
                 }
             }
             .setPositiveButton("OK") { _, _ ->
                 updateDialogText(autoCompleteTextView)
-                filterExpensesByCategories(selectedCategories)
+                updateFilteredExpenses()
             }
             .setNegativeButton("Cancel", null)
             .show()
@@ -169,25 +181,12 @@ class GroupOverviewFragment : Fragment() {
         )
     }
 
-    private fun filterExpensesByCategories(categories: Set<String>) {
-        val allExpenses = expenses // Replace with your actual expense list
-        val filteredExpenses = if (categories.isEmpty()) {
-            allExpenses
-        } else {
-            allExpenses.filter { it.category in categories }
-        }
-        expenseAdapter.updateExpenses(filteredExpenses)
-
-        // Update your RecyclerView adapter here
-    }
-
-
     private fun showAddExpenseDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_expense, null)
         val descriptionEditText = dialogView.findViewById<EditText>(R.id.editTextExpenseDescription)
         val amountEditText = dialogView.findViewById<EditText>(R.id.editTextExpenseAmount)
 
-        var selectedCategory = "General" // Default to "General"
+        var selectedCategory = "General"
         val spinnerCategory: Spinner = dialogView.findViewById<Spinner>(R.id.spinnerCategory)
 
         spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -219,21 +218,25 @@ class GroupOverviewFragment : Fragment() {
             .show()
     }
 
-    private fun addExpense(description: String, amount: Double, payerId: String, selectedCategory: String) {
+    private fun addExpense(description: String, amount: Double, payerId: String, category: String) {
         val expense = Expense(
             groupId = groupId ?: "",
             amount = amount,
             description = description,
             payerId = payerId,
             createdAt = System.currentTimeMillis(),
-            category = selectedCategory
+            category = category
         )
+
         firestore.collection("expenses")
             .add(expense)
             .addOnSuccessListener { documentRef ->
                 expense.id = documentRef.id
-                expenses.add(0, expense)
-                expenseAdapter.notifyItemInserted(0)
+                allExpenses.add(0, expense)
+                if (selectedCategories.isEmpty() || category in selectedCategories) {
+                    filteredExpenses.add(0, expense)
+                    expenseAdapter.notifyItemInserted(0)
+                }
                 addExpenseSplits(expense)
             }
             .addOnFailureListener { e ->
