@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.expensetrackerapp.R
 import com.google.firebase.auth.FirebaseAuth
@@ -33,8 +34,8 @@ class ProfileFragment : Fragment() {
         val editTextEmail = view.findViewById<EditText>(R.id.editTextEmail)
         val editTextPhoneNumber = view.findViewById<EditText>(R.id.editTextPhoneNumber)
         val buttonSave = view.findViewById<Button>(R.id.buttonSave)
-        val goToGroupsButton: Button = view.findViewById(R.id.buttonGoToGroups)
         val buttonChangePassword = view.findViewById<Button>(R.id.buttonChangePassword)
+        val buttonLogout: Button = view.findViewById(R.id.buttonLogout)
 
         // Load user data
         firestore.collection("users").document(userId).get()
@@ -82,8 +83,16 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        goToGroupsButton.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_groupFragment)
+        buttonLogout.setOnClickListener {
+            auth.signOut()
+
+            val navOptions = NavOptions.Builder()
+                .setPopUpTo(R.id.loginFragment, true)
+                .build()
+
+            findNavController().navigate(R.id.action_profileFragment_to_loginFragment, null, navOptions)
+
+            Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show()
         }
 
         return view

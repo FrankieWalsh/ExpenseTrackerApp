@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.groupFragment, R.id.profileFragment) // Fragments where back button is not needed
+            setOf(R.id.groupFragment) // Fragments where back button is not needed
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
 

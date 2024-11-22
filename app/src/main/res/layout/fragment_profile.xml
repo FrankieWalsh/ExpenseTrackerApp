@@ -51,14 +51,16 @@
             android:layout_height="wrap_content"
             android:text="Save Changes"
             android:textColor="@color/textColorSecondary"/>
+
         <Button
-            android:id="@+id/buttonGoToGroups"
-            android:layout_width="wrap_content"
+            android:id="@+id/buttonLogout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Go to Home"
-            android:layout_gravity="center_horizontal"
+            android:text="Logout"
             android:layout_marginTop="16dp"
-            android:textColor="@color/textColorSecondary"/>
+            android:backgroundTint="@color/delete_color"
+            android:textColor="@color/textColorSecondary"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 </ScrollView>

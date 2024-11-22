@@ -14,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.expensetrackerapp.R
 import com.example.expensetrackerapp.viewmodel.AuthViewModel
 import android.graphics.Paint
+import androidx.navigation.NavOptions
+import com.google.firebase.auth.FirebaseAuth
 
 class LoginFragment : Fragment() {
 
@@ -61,8 +63,17 @@ class LoginFragment : Fragment() {
                 Toast.makeText(requireContext(), "Login failed", Toast.LENGTH_SHORT).show()
             }
         }
-
-
         return view
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            val navOptions = NavOptions.Builder()
+                .setPopUpTo(R.id.loginFragment, true)
+                .build()
+
+            findNavController().navigate(R.id.action_loginFragment_to_groupFragment, null, navOptions)
+        }
     }
 }
