@@ -149,7 +149,7 @@ class SummaryFragment : Fragment() {
 
     private fun fetchGroupMembersWithBalances() {
         groupId?.let { groupId ->
-            // Obtener los miembros del grupo
+            // obtain the members of a group
             firestore.collection("group_members")
                 .whereEqualTo("groupId", groupId)
                 .get()
@@ -157,7 +157,7 @@ class SummaryFragment : Fragment() {
                     val memberIds =
                         groupMembersResult.documents.map { it.getString("userId") ?: "" }
 
-                    // Obtener los detalles de cada usuario
+                    // details of each user
                     firestore.collection("users")
                         .whereIn("id", memberIds)
                         .get()
@@ -169,12 +169,12 @@ class SummaryFragment : Fragment() {
                                 )
                             }
 
-                            // Obtener los balances de los miembros (esperamos el balance asincrónico)
+                            // obtain the balance of the members
                             val membersWithBalance = mutableListOf<GroupMemberWithBalance>()
                             val tasks =
-                                mutableListOf<Task<Void>>()  // Para esperar todas las consultas asincrónicas
+                                mutableListOf<Task<Void>>()  // To wait for the requests
 
-                            // Recorremos todos los miembros y calculamos su balance
+                            //Go through each member and calculate the balance
                             members.forEach { member ->
                                 val task = calculateBalanceForMember(member.id) { balance ->
                                     membersWithBalance.add(
@@ -185,7 +185,7 @@ class SummaryFragment : Fragment() {
                                         )
                                     )
 
-                                    // Si ya hemos calculado el balance para todos los miembros, actualizamos el RecyclerView
+                                    // Update the RecyclerView
                                     if (membersWithBalance.size == members.size) {
                                         val recyclerView =
                                             view?.findViewById<RecyclerView>(R.id.recyclerViewGroupMembers)
@@ -195,12 +195,12 @@ class SummaryFragment : Fragment() {
                                         recyclerView?.adapter = adapter
                                     }
                                 }
-                                tasks.add(task) // Agregamos la tarea para esperar
+                                tasks.add(task)
                             }
 
-                            // Esperamos que todas las tareas terminen
+                            //Wait to all the task to finish
                             Tasks.whenAll(*tasks.toTypedArray()).addOnCompleteListener {
-                                // Ya hemos cargado todos los balances
+                                //all the balances have been loaded
                                 Log.d(
                                     "SummaryFragment",
                                     "Finished loading all members with balances"
@@ -246,7 +246,6 @@ class SummaryFragment : Fragment() {
                     }
                 }
 
-                // Llamamos al callback cuando terminamos de calcular el balance
                 callback(balance)
                 taskCompletionSource.setResult(null)
             }
