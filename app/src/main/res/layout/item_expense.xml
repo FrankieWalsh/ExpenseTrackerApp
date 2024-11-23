@@ -27,12 +27,25 @@
         android:layout_marginTop="4dp" />
 
     <!-- Conditional "Pay" button for users who didn't create the expense -->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ViewParticipants"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/textViewGroupMembers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/buttonPay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pay"
         android:layout_marginTop="8dp"
-        android:visibility="gone" /> <!-- Initially hidden -->
+        android:visibility="gone" />
+
+    <!-- Initially hidden -->
 
 </LinearLayout>

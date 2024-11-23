@@ -8,5 +8,6 @@ data class Expense(
     val payerId: String = "",
     val receiptPhotoUrl: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
-    val category: String = "General"
+    val category: String = "General",
+    val participant: List<String> = listOf()
 )

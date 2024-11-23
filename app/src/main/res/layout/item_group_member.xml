@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    android:background="@drawable/member_item_background"
+    android:padding="16dp">
+
+    <!-- Nombre del miembro (A la izquierda) -->
+    <TextView
+        android:id="@+id/textViewMemberName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Member Name"
+        android:textSize="16sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <!-- Balance del miembro (A la derecha) -->
+    <TextView
+        android:id="@+id/textViewBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00"
+        android:textColor="#808080"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/textViewMemberName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="5dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
