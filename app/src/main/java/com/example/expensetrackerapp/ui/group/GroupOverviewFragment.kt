@@ -68,9 +68,8 @@ class GroupOverviewFragment : Fragment() {
         }
 
         // Initialize RecyclerView for expenses
-        expenseAdapter = ExpenseAdapter(filteredExpenses) { expense ->
-            showPaymentDialog(expense)
-        }
+        expenseAdapter = ExpenseAdapter(filteredExpenses)
+
 
         expensesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         expensesRecyclerView.adapter = expenseAdapter

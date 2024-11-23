@@ -8,27 +8,26 @@
     android:background="@drawable/member_item_background"
     android:padding="16dp">
 
+    <!-- Phrase Text -->
     <TextView
-        android:id="@+id/textViewMemberName"
-        android:layout_width="wrap_content"
+        android:id="@+id/textViewPhrase"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Member Name"
+        android:text="You owe $10.00 to Carlos"
         android:textSize="16sp"
-        android:maxLines="1"
+        android:maxLines="2"
         android:ellipsize="end"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonPayMember"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <TextView
-        android:id="@+id/textViewBalance"
+    <!-- Pay Button -->
+    <Button
+        android:id="@+id/buttonPayMember"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0.00"
-        android:textColor="#808080"
-        android:textSize="16sp"
-        android:layout_marginEnd="5dp"
-        app:layout_constraintStart_toEndOf="@id/textViewMemberName"
+        android:text="Pay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

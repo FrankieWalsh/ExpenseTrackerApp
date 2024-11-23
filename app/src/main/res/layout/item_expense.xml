@@ -1,51 +1,68 @@
-<!-- item_expense.xml -->
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/expenseCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="?attr/colorPrimaryVariant"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:strokeColor="@android:color/transparent">
 
-    <TextView
-        android:id="@+id/textViewExpenseDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp" />
-
-
-    <TextView
-        android:id="@+id/textViewExpenseCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/textViewExpenseAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginTop="4dp" />
-
-    <!-- Conditional "Pay" button for users who didn't create the expense -->
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ViewParticipants"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <TextView
-        android:id="@+id/textViewGroupMembers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/buttonPay"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pay"
-        android:layout_marginTop="8dp"
-        android:visibility="gone" />
+        android:padding="16dp">
 
-    <!-- Initially hidden -->
+        <!-- Expense Description (Bold) -->
+        <TextView
+            android:id="@+id/textViewExpenseDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Expense Description"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textViewExpenseAmount"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-</LinearLayout>
+        <!-- Expense Amount (Right) -->
+        <TextView
+            android:id="@+id/textViewExpenseAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$0.00"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@id/textViewExpenseDescription"/>
+
+        <!-- Category -->
+        <TextView
+            android:id="@+id/textViewExpenseCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewExpenseDescription"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Paid By -->
+        <TextView
+            android:id="@+id/textViewPaidBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Paid by: User"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewExpenseCategory"
+            android:layout_marginTop="4dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Existing TextViews -->
     <TextView
         android:id="@+id/textViewTotalOwed"
         android:layout_width="wrap_content"
@@ -24,17 +25,40 @@
         android:id="@+id/textViewItemsPaid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Items Paid For: 0"
+        android:text="Expenses Added: 0"
         android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Section for Member Balances -->
+    <TextView
+        android:id="@+id/textViewMemberBalances"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Member Balances"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewGroupMembers"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Section for Payment Calculations -->
+    <TextView
+        android:id="@+id/textViewPaymentCalculations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment Calculations"
+        android:textSize="18sp"
+        android:textStyle="bold"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:orientation="vertical" />
+        android:layout_marginBottom="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPaymentCalculations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

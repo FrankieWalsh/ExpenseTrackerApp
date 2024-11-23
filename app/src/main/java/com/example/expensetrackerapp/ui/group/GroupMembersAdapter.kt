@@ -4,11 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetrackerapp.R
 import com.example.expensetrackerapp.model.GroupMemberWithBalance
-import com.example.expensetrackerapp.model.User
-
 
 class GroupMembersAdapter(
     private val members: List<GroupMemberWithBalance>
@@ -33,12 +32,24 @@ class GroupMembersAdapter(
 
         fun bind(member: GroupMemberWithBalance) {
             memberNameTextView.text = member.name
-            balanceTextView.text = "$${member.balance}"
+            balanceTextView.text = "$${String.format("%.2f", member.balance)}"
 
             when {
-                member.balance > 0 -> balanceTextView.setTextColor(itemView.context.getColor(R.color.green_40))
-                member.balance < 0 -> balanceTextView.setTextColor(itemView.context.getColor(R.color.delete_color))
-                else -> balanceTextView.setTextColor(itemView.context.getColor(R.color.grey))
+                member.balance > 0 -> {
+                    balanceTextView.setTextColor(
+                        ContextCompat.getColor(itemView.context, R.color.green_40)
+                    )
+                }
+                member.balance < 0 -> {
+                    balanceTextView.setTextColor(
+                        ContextCompat.getColor(itemView.context, R.color.delete_color)
+                    )
+                }
+                else -> {
+                    balanceTextView.setTextColor(
+                        ContextCompat.getColor(itemView.context, R.color.grey)
+                    )
+                }
             }
         }
     }
