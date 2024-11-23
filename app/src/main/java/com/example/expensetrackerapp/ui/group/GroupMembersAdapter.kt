@@ -8,29 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetrackerapp.R
 import com.example.expensetrackerapp.model.GroupMemberWithBalance
 import com.example.expensetrackerapp.model.User
-/*
-class GroupMembersAdapter(private val members: List<User>) :
-    RecyclerView.Adapter<GroupMembersAdapter.GroupMemberViewHolder>() {
 
-    class GroupMemberViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nameTextView: TextView = itemView.findViewById(R.id.textViewMemberName)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupMemberViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_group_member, parent, false)
-        return GroupMemberViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: GroupMemberViewHolder, position: Int) {
-        val member = members[position]
-        holder.nameTextView.text = member.name
-    }
-
-    override fun getItemCount(): Int {
-        return members.size
-    }
-}*/
 
 class GroupMembersAdapter(
     private val members: List<GroupMemberWithBalance>
@@ -57,7 +35,6 @@ class GroupMembersAdapter(
             memberNameTextView.text = member.name
             balanceTextView.text = "$${member.balance}"
 
-            // Cambia el color según el balance
             when {
                 member.balance > 0 -> balanceTextView.setTextColor(itemView.context.getColor(R.color.green_40))
                 member.balance < 0 -> balanceTextView.setTextColor(itemView.context.getColor(R.color.delete_color))
