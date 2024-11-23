@@ -1,108 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollViewGroupOverview"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp">
-
-    <!-- Group Name at the top -->
-    <TextView
-        android:id="@+id/textViewGroupName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:text="Group Name" />
-
-    <!-- Group Description below the group name -->
-    <TextView
-        android:id="@+id/textViewGroupDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginTop="4dp"
-        android:text="Group Description" />
-
-    <!-- Members Label -->
-    <TextView
-        android:id="@+id/textViewMembersLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Members:"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="8dp" />
-
-    <!-- RecyclerView to display members -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewGroupMembers"
+    <LinearLayout
+        android:id="@+id/linearLayoutGroupOverview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
+        <!-- Group Name -->
+        <TextView
+            android:id="@+id/textViewGroupName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group Name"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-    <!-- Edit Group button -->
-    <Button
-        android:id="@+id/buttonEditGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit Group"
-        android:visibility="gone"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/textColorSecondary"/>
+        <!-- Group Description -->
+        <TextView
+            android:id="@+id/textViewGroupDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group Description"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp" />
 
-    <!-- Filter selection   -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutFilterCategories"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="">
+        <!-- Edit Group Button -->
+        <Button
+            android:id="@+id/buttonEditGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Group"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+        <!-- Members Label -->
+        <TextView
+            android:id="@+id/textViewMembersLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Members:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <!-- Horizontal ScrollView to display members -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:id="@+id/linearLayoutGroupMembers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Member Views will be added here dynamically -->
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <!-- Expenses Filter -->
+        <TextView
+            android:id="@+id/textViewFilterCategoriesLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter by Categories:"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp" />
 
         <AutoCompleteTextView
             android:id="@+id/autoCompleteFilterCategories"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
+            android:hint="Select Categories"
             android:inputType="none"
             android:focusable="false"
-            android:clickable="true" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginTop="8dp" />
 
+        <!-- Expenses RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewExpenses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
 
-    <!-- Expenses RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewExpenses"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="8dp" />
-
-    <ImageView
-        android:id="@+id/fabAddExpense"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:src="@drawable/ic_add"
-        android:contentDescription="Create Group"
-        app:tint="?attr/colorPrimary"
-        android:layout_gravity="center" />
-
-    <!-- Text below the button -->
-    <TextView
-        android:id="@+id/textAddExpense"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Expense"
-        android:layout_marginTop="8dp"
-        android:textColor="?attr/colorPrimary"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:layout_gravity="center" />
-</LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Floating Action Button to Add Expense -->
+        <ImageView
+            android:id="@+id/fabAddExpense"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_add"
+            android:contentDescription="Add Expense"
+            android:layout_gravity="end"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>

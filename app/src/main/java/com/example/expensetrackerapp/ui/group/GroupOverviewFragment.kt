@@ -1,37 +1,24 @@
 package com.example.expensetrackerapp.ui.group
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import com.example.expensetrackerapp.R
 import com.example.expensetrackerapp.model.Expense
 import com.example.expensetrackerapp.model.ExpenseSplit
+import com.example.expensetrackerapp.model.User
 import com.example.expensetrackerapp.ui.expense.ExpenseAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.example.expensetrackerapp.model.User
-
 
 class GroupOverviewFragment : Fragment() {
 
@@ -43,7 +30,6 @@ class GroupOverviewFragment : Fragment() {
     private val selectedCategories = mutableSetOf<String>()
     private lateinit var categoryAdapter: ArrayAdapter<String>
     private val groupMembers = mutableListOf<User>()
-    private lateinit var groupMemberAdapter: GroupMemberAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,38 +40,34 @@ class GroupOverviewFragment : Fragment() {
         groupId = arguments?.getString("groupId")
 
         // Initialize UI elements
-        groupMemberAdapter = GroupMemberAdapter(groupMembers)
-        val recyclerViewGroupMembers = view.findViewById<RecyclerView>(R.id.recyclerViewGroupMembers)
-        recyclerViewGroupMembers.layoutManager = LinearLayoutManager(requireContext())
-        recyclerViewGroupMembers.adapter = groupMemberAdapter
         val groupNameTextView = view.findViewById<TextView>(R.id.textViewGroupName)
         val groupDescriptionTextView = view.findViewById<TextView>(R.id.textViewGroupDescription)
         val editButton = view.findViewById<Button>(R.id.buttonEditGroup)
         val expensesRecyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewExpenses)
         val addExpenseButton = view.findViewById<ImageView>(R.id.fabAddExpense)
+        val linearLayoutGroupMembers = view.findViewById<LinearLayout>(R.id.linearLayoutGroupMembers)
 
         val autoCompleteFilterCategories: AutoCompleteTextView =
             view.findViewById(R.id.autoCompleteFilterCategories)
 
         val categories = resources.getStringArray(R.array.expense_categories)
         updateDialogText(autoCompleteFilterCategories)
-        categoryAdapter = ArrayAdapter(requireContext(),
-            android.R.layout.simple_list_item_multiple_choice, categories)
-            autoCompleteFilterCategories.setAdapter(categoryAdapter)
+        categoryAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_list_item_multiple_choice, categories
+        )
+        autoCompleteFilterCategories.setAdapter(categoryAdapter)
 
         autoCompleteFilterCategories.setOnClickListener {
             showMultiSelectDialog(categories, autoCompleteFilterCategories)
         }
 
-        // Set up Floating Action Button to create new groups
-        view.findViewById<ImageView>(R.id.fabAddExpense).setOnClickListener {
+        // Set up Floating Action Button to create new expenses
+        addExpenseButton.setOnClickListener {
             showAddExpenseDialog()
         }
 
-        // Setup Add Expense button
-        // addExpenseButton.setOnClickListener { showAddExpenseDialog() }
-
-        // Initialize RecyclerView
+        // Initialize RecyclerView for expenses
         expenseAdapter = ExpenseAdapter(filteredExpenses) { expense ->
             showPaymentDialog(expense)
         }
@@ -130,12 +112,14 @@ class GroupOverviewFragment : Fragment() {
 
         // Fetch expenses for the group
         fetchExpenses()
-        fetchGroupMembers()
+
+        // Fetch and display group members
+        fetchGroupMembers(linearLayoutGroupMembers)
 
         return view
     }
 
-    private fun fetchGroupMembers() {
+    private fun fetchGroupMembers(linearLayoutGroupMembers: LinearLayout) {
         groupId?.let { id ->
             firestore.collection("group_members")
                 .whereEqualTo("groupId", id)
@@ -148,13 +132,33 @@ class GroupOverviewFragment : Fragment() {
                             .whereIn("id", userIds)
                             .get()
                             .addOnSuccessListener { userResult ->
+                                // Clear existing views
+                                linearLayoutGroupMembers.removeAllViews()
                                 groupMembers.clear()
                                 for (userDoc in userResult) {
                                     val user = userDoc.toObject(User::class.java)
                                     user.id = userDoc.id
                                     groupMembers.add(user)
+                                    val displayName = user.name.takeIf { !it.isNullOrBlank() } ?: user.email
+
+                                    // Create TextView for each member
+                                    val memberTextView = TextView(requireContext()).apply {
+                                        text = displayName
+                                        setPadding(16, 8, 16, 8)
+                                        setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                                        setTypeface(null, Typeface.BOLD)
+                                        background = ContextCompat.getDrawable(requireContext(), R.drawable.member_background)
+                                    }
+
+                                    // Add margin to the TextView
+                                    val layoutParams = LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                    ).apply {
+                                        rightMargin = 8  // Adjust spacing between items
+                                    }
+                                    linearLayoutGroupMembers.addView(memberTextView, layoutParams)
                                 }
-                                groupMemberAdapter.notifyDataSetChanged()
                             }
                             .addOnFailureListener { e ->
                                 Toast.makeText(requireContext(), "Error fetching users: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -195,7 +199,6 @@ class GroupOverviewFragment : Fragment() {
         )
         expenseAdapter.notifyDataSetChanged()
     }
-
 
     private fun showMultiSelectDialog(categories: Array<String>, autoCompleteTextView: AutoCompleteTextView) {
         val selectedItems = BooleanArray(categories.size) { selectedCategories.contains(categories[it]) }
@@ -239,11 +242,12 @@ class GroupOverviewFragment : Fragment() {
         }
 
         // Fetch group members for selection
-        val memberNames = groupMembers.map { it.name ?: it.email }
+        val memberNames = groupMembers.map { it.name.takeIf { name -> name.isNotBlank() } ?: it.email }
         val memberIds = groupMembers.map { it.id }
 
         val arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_multiple_choice, memberNames)
         listViewMembers.adapter = arrayAdapter
+        listViewMembers.choiceMode = ListView.CHOICE_MODE_MULTIPLE
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Add New Expense")
@@ -272,7 +276,6 @@ class GroupOverviewFragment : Fragment() {
             .show()
     }
 
-
     private fun addExpense(description: String, amount: Double, payerId: String, category: String, selectedMemberIds: List<String>) {
         val expense = Expense(
             groupId = groupId ?: "",
@@ -299,7 +302,6 @@ class GroupOverviewFragment : Fragment() {
             }
     }
 
-
     private fun addExpenseSplits(expense: Expense, selectedMemberIds: List<String>) {
         val memberCount = selectedMemberIds.size
         if (memberCount > 0) {
@@ -321,10 +323,6 @@ class GroupOverviewFragment : Fragment() {
             }
         }
     }
-
-
-
-
 
     private fun showPaymentDialog(expense: Expense) {
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
@@ -368,21 +366,5 @@ class GroupOverviewFragment : Fragment() {
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), "Error marking payment: ${e.message}", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    private inner class GroupPagerAdapter(fa: FragmentActivity, private val groupId: String?) : FragmentStateAdapter(fa) {
-        override fun getItemCount(): Int = 2
-
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> GroupOverviewFragment().apply {
-                    arguments = Bundle().apply { putString("groupId", groupId) }
-                }
-                1 -> SummaryFragment().apply {
-                    arguments = Bundle().apply { putString("groupId", groupId) }
-                }
-                else -> throw IllegalArgumentException("Invalid tab position")
-            }
-        }
     }
 }
