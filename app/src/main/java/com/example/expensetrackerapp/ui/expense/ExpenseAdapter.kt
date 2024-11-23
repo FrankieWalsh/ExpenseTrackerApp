@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetrackerapp.R
 import com.example.expensetrackerapp.model.Expense
@@ -23,7 +24,9 @@ class ExpenseAdapter(
         val descriptionTextView: TextView = itemView.findViewById(R.id.textViewExpenseDescription)
         val categoryTextView: TextView = itemView.findViewById(R.id.textViewExpenseCategory)
         val amountTextView: TextView = itemView.findViewById(R.id.textViewExpenseAmount)
+        val participantsView: RecyclerView = itemView.findViewById(R.id.ViewParticipants)
         val payButton: Button = itemView.findViewById(R.id.buttonPay)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseViewHolder {
@@ -40,8 +43,15 @@ class ExpenseAdapter(
         val expense = expenses[position]
         holder.descriptionTextView.text = expense.description
         holder.categoryTextView.text = expense.category
+       // holder.participantsView.recycler = expense.participant
 
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+
+        val participantAdapter = ParticipantAdapter(expense.participant)
+        holder.participantsView.apply {
+            layoutManager = LinearLayoutManager(holder.itemView.context)
+            adapter = participantAdapter
+        }
 
         if (expense.payerId == currentUserId) {
             // If the current user is the payer, show the total amount paid

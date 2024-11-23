@@ -17,6 +17,8 @@
     <color name="blue_40">#D0E6E0</color>
     <color name="blue_80">#859A9F</color>
     <color name="delete_color">#C11313</color>
+    <color name="grey">#9B9B9B</color>
+
 
     <color name="group_item_background">#F0F0F0</color>
     <color name="textColorPrimary">#000000</color>
