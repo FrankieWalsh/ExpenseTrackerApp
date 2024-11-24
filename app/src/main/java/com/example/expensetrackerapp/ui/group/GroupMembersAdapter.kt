@@ -37,7 +37,7 @@ class GroupMembersAdapter(
             when {
                 member.balance > 0 -> {
                     balanceTextView.setTextColor(
-                        ContextCompat.getColor(itemView.context, R.color.green_40)
+                        ContextCompat.getColor(itemView.context, R.color.green_80)
                     )
                 }
                 member.balance < 0 -> {

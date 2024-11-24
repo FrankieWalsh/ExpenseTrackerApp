@@ -20,7 +20,9 @@ import android.widget.EditText
 import android.widget.Button
 import android.util.Log
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.expensetrackerapp.model.GroupMember
 import com.google.android.material.button.MaterialButton
 
@@ -104,12 +106,14 @@ class GroupFragment : Fragment() {
                             }
                             groupAdapter.notifyDataSetChanged()
                             toggleNoGroupsMessage() // Adjust visibility of "No groups" message based on membership
+                            adjustHeaderMargin()
                         }
                 } else {
                     // If no memberships, clear the group list and show "No groups" message
                     groups.clear()
                     groupAdapter.notifyDataSetChanged()
                     toggleNoGroupsMessage()
+                    adjustHeaderMargin()
                 }
 
                 // Fetch pending invitations separately for display in the invitation list
@@ -134,6 +138,7 @@ class GroupFragment : Fragment() {
                     Log.d("GroupFragment", "No pending invitations found for user $userId")
                     view?.findViewById<View>(R.id.invitationsContainer)?.visibility = View.GONE
                     invitationAdapter.notifyDataSetChanged()
+                    toggleNoGroupsMessage()
                     return@addOnSuccessListener
                 }
 
@@ -188,11 +193,38 @@ class GroupFragment : Fragment() {
 
     private fun toggleNoGroupsMessage() {
         val noGroupsTextView = view?.findViewById<TextView>(R.id.textViewNoGroups)
+        val headerContainer = view?.findViewById<View>(R.id.headerContainer)
+
         if (groups.isEmpty() && invitations.isEmpty()) {
             noGroupsTextView?.visibility = View.VISIBLE
+            headerContainer?.visibility = View.GONE
         } else {
             noGroupsTextView?.visibility = View.GONE
+            headerContainer?.visibility = View.VISIBLE
         }
+        adjustHeaderMargin()
+    }
+
+    private fun adjustHeaderMargin() {
+        val headerContainer = view?.findViewById<LinearLayout>(R.id.headerContainer)
+        val invitationsContainer = view?.findViewById<LinearLayout>(R.id.invitationsContainer)
+
+        val layoutParams = headerContainer?.layoutParams as? ConstraintLayout.LayoutParams
+        if (layoutParams != null) {
+            if (invitationsContainer?.visibility == View.GONE) {
+                // Set marginTop to 0dp if invitationsContainer is not visible
+                layoutParams.topMargin = 0
+            } else {
+                // Set marginTop to 24dp if invitationsContainer is visible
+                layoutParams.topMargin = 24.dpToPx()
+            }
+            headerContainer.layoutParams = layoutParams
+        }
+    }
+
+    // Helper extension function to convert dp to px
+    private fun Int.dpToPx(): Int {
+        return (this * resources.displayMetrics.density).toInt()
     }
 
 

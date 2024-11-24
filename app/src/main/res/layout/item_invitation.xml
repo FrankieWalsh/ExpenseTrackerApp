@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="Accept"
             android:backgroundTint="?attr/colorPrimaryVariant"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/textColorPrimary"
             android:textStyle="bold"
             android:layout_marginEnd="8dp" />
 
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="Decline"
             android:backgroundTint="?attr/colorPrimaryVariant"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/textColorPrimary"
             android:textStyle="bold" />
 
     </LinearLayout>
