@@ -8,10 +8,10 @@
         android:title="Profileee"
         app:showAsAction="always"  />
 
-    <!-- Notificacion Button -->
+    <!-- Dark mode Button -->
     <item
-        android:id="@+id/notificationsFragment"
-        android:icon="@drawable/ic_notification"
+        android:id="@+id/darkmodeFragment"
+        android:icon="@drawable/ic_darkmode"
         android:title="Notifications"
         app:showAsAction="always" />
 </menu>
