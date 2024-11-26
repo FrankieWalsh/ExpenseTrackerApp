@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Group Name Input Field -->
+    <EditText
+        android:id="@+id/editTextGroupName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Group Name"
+        android:inputType="text"
+        android:padding="12dp"
+        android:layout_marginTop="?attr/actionBarSize" />
+
+    <!-- Group Description Input Field -->
+    <EditText
+        android:id="@+id/editTextGroupDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Group Description"
+        android:inputType="text"
+        android:padding="12dp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Email Input Field for Inviting Users -->
+    <EditText
+        android:id="@+id/editTextInviteEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Invite by Email"
+        android:inputType="textEmailAddress"
+        android:padding="12dp"
+        android:layout_marginTop="16dp" />
+
+    <!-- Button to Add Email to the Invite List -->
+    <Button
+        android:id="@+id/buttonAddEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Email to Invites"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/textColorSecondary"/>
+
+    <!-- RecyclerView to show the list of invited emails -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewInvitedEmails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
+
+    <!-- Button to Create the Group -->
+    <Button
+        android:id="@+id/buttonCreateGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Group"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/textColorSecondary"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/buttonDeleteGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Group"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/delete_color"
+        android:textColor="@color/textColorSecondary"
+        android:textStyle="bold"/>
+
+</LinearLayout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <color name="purple_80">#D0BCFF</color>
+    <color name="purple_grey_80">#CCC2DC</color>
+    <color name="pink_80">#EFB8C8</color>
+    <color name="purple_40">#6650A4</color>
+    <color name="purple_grey_40">#625B71</color>
+    <color name="pink_40">#7D5260</color>
+
+    <color name="green_40">#4B8564</color>
+    <color name="green_80">#95CD9E</color>
+    <color name="green_80_2">#4B8564</color>
+    <color name="green_grey_40">#859A9F</color>
+    <color name="blue_40">#859A9F</color>
+    <color name="blue_80">#D0E6E0</color>
+    <color name="delete_color">#D56B6B</color>
+
+    <color name="group_item_background">#303030</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="textColorSecondary">#222222</color>
+
+    <color name="textColorExpenses">#F5F5F5</color>
+</resources>

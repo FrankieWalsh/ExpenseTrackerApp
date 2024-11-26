@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#95cd9e" /> <!-- Cambia este color a tu preferido -->
+    <corners android:radius="50dp" />  <!-- Hace el botón redondo -->
+</shape>

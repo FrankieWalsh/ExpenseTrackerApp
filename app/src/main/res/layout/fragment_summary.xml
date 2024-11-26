@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Existing TextViews -->
+    <TextView
+        android:id="@+id/textViewTotalOwed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Owed: $0.0"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/textViewTotalOwing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Owing: $0.0"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/textViewItemsPaid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Expenses Added: 0"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Section for Member Balances -->
+    <TextView
+        android:id="@+id/textViewMemberBalances"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Member Balances"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewGroupMembers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Section for Payment Calculations -->
+    <TextView
+        android:id="@+id/textViewPaymentCalculations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment Calculations"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPaymentCalculations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

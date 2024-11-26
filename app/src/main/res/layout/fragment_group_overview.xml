@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollViewGroupOverview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutGroupOverview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Group Name -->
+        <TextView
+            android:id="@+id/textViewGroupName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group Name"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- Group Description -->
+        <TextView
+            android:id="@+id/textViewGroupDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group Description"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp" />
+
+        <!-- Edit Group Button -->
+        <Button
+            android:id="@+id/buttonEditGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Group"
+            android:textColor="@color/textColorSecondary"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+        <!-- Members Label -->
+        <TextView
+            android:id="@+id/textViewMembersLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Members:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <!-- Horizontal ScrollView to display members -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:id="@+id/linearLayoutGroupMembers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Member Views will be added here dynamically -->
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <!-- Expenses Filter -->
+        <TextView
+            android:id="@+id/textViewFilterCategoriesLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter by Categories:"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp" />
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteFilterCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Select Categories"
+            android:inputType="none"
+            android:focusable="false"
+            android:layout_marginTop="8dp" />
+
+        <!-- Expenses RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewExpenses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <!-- Floating Action Button to Add Expense -->
+        <ImageView
+            android:id="@+id/fabAddExpense"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_add"
+            android:contentDescription="Add Expense"
+            android:layout_gravity="end"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>

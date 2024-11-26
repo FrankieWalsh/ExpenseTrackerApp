@@ -1,5 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.ExpenseTrackerApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/green_80</item>
+        <item name="colorTertiary">@color/green_80_2</item>
+        <item name="colorPrimaryVariant">@color/green_40</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/blue_40</item>
+        <item name="colorSecondaryVariant">@color/blue_80</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/green_grey_40</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 
-    <style name="Theme.ExpenseTrackerApp" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Theme Overlay for Login and Register Pages -->
+    <style name="Theme.ExpenseTrackerApp.LoginOverlay" parent="Theme.ExpenseTrackerApp">
+        <item name="colorPrimary">@color/green_40</item>
+        <item name="colorPrimaryVariant">@color/green_80</item>
+    </style>
 </resources>
